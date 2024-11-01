@@ -1,0 +1,20 @@
+h1 {
+  font-size: 42px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+p {
+  font-size: 20px;
+  line-height: 1.4; /*문단 내 문장 별 간격*/
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+span {
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+ul {
+  list-style: none; /*리스트 옆에 있는 . 이 없어짐*/
+}
