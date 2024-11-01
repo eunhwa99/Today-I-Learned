@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Today I Learned</title>
+  </head>
+  <body>
+    <header>
+      <!-- img, h1을 단지 그루핑하는 역할 (업어도 구조에는 영향X)-->
+      <!--동일한 styling 적용 가능-->
+      <img src="logo.png" height="68" width="68" alt="Today I Learned Logo" />
+      <h1>Today I Learned</h1>
+      <button>CLOSE</button>
+    </header>
+
+
+    <link href="style.css"
+    rel="stylesheet"/>
+
+
+    <main>
+      <!--header처럼 main으로도 묶는다. -->
+      <form>
+        <input type="text" placeholder="default text" maxlength="200" />
+        <!--<p> 로 감싸면 아예 새로운 줄로 가기 떄문에 span 사용한다!!-->
+        <span>200</span>
+        <input type="text" />
+        <select>
+          <option value="">Choose category</option>
+          <option value="technology">Technology</option>
+          <option value="science">Science</option>
+          <option value="society">Society</option>
+        </select>
+        <button>Post</button>
+      </form>
+
+      <aside>
+        <ul>
+          <li><button>All</button></li>
+          <li><button>Technology</button></li>
+          <li><button>Society</button></li>
+        </ul>
+      </aside>
+
+      <section>
+        <ul>
+          <li>
+            <p>
+              React is being developed by Meta (formerly facebook)
+              <a href="https://opensource.fb.com/">(Source)</a>
+              <span>##technology##</span>
+            </p>
+            <span
+              ><!--div?span?-->
+              <button>👍 <b>23</b></button>
+              <button>❤️ <strong>2</strong></button>
+            </span>
+          </li>
+          <li>
+            <p>
+              Lisbon is the capital of Portugal
+              <a href="https://en.wikipedia.org/wiki/Lisbon" target="_parent"
+                >(Source)</a
+              >
+              <span>##society##</span>
+            </p>
+            <div>
+              <button>👍 <b>23</b></button>
+              <button>❤️ <strong>2</strong></button>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
