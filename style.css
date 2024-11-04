@@ -1,14 +1,29 @@
+* {
+  /* global selector */
+  /* margin과 padding은 상속이 안되므로 global selector에서 지정해야함*/
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   background-color: #292524;
   color: #fafaf9;
   font-family: "Sono", sans-serif;
+  padding: 40px;
 }
+
 .header {
+  /*margin: 40px;*/
+  margin-bottom: 40px;
 }
 
 .fact-form {
   background-color: #44403c;
+  margin-bottom: 40px;
+  padding: 16px 40px;
 }
+
 h1 {
   font-size: 42px;
   text-transform: uppercase;
@@ -24,6 +39,12 @@ h1 {
   /* font-family: "Sono", sans-serif; */
   /* color: #fafaf9; */
   background-color: #44403c;
+  margin-bottom: 16px; /*space outside*/
+  padding: 16px 24px; /*vertical horizontal*/
+  /*padding-left를 padding 밑에 쓰면 적용되지만, padding 전에 사용하면 적용 안됨 -> padding: 16px 이 padding-left 속성을 덮어쓰기 때문*/
+  /*border: 4px dashed red;*/ /*border 지정 가능*/
+}
+
 .tag {
   text-transform: uppercase;
   font-size: 14px;
