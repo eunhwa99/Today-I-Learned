@@ -1,17 +1,34 @@
+body {
+  background-color: #292524;
+  color: #fafaf9;
+  font-family: "Sono", sans-serif;
+}
+.header {
+}
+
+.fact-form {
+  background-color: #44403c;
+}
 h1 {
   font-size: 42px;
   text-transform: uppercase;
+  /* text-align: center; */
   font-family: "Coiny", sans-serif; /* google font , 보조 font(google font가 없을 경우)*/
+
+  /* color: #fafaf9; */ /* inheritance 사용 */
 }
 
 .fact {
   font-size: 20px;
   line-height: 1.4; /*문단 내 문장 간 간격*/
   /* font-family: "Sono", sans-serif; */
+  /* color: #fafaf9; */
+  background-color: #44403c;
 .tag {
   text-transform: uppercase;
   font-size: 14px;
   font-family: "Coiny", sans-serif;
+  /* color: #fafaf9; */
 }
 
 ul {
