@@ -7,11 +7,12 @@
   </head>
   <body>
     <header class="header">
-      <!-- img, h1을 단지 그루핑하는 역할 (없어도 구조에는 영향X)-->
-      <!--동일한 styling 적용 가능-->
-      <img src="logo.png" height="68" width="68" alt="Today I Learned Logo" />
-      <h1>Today I Learned</h1>
-      <button>CLOSE</button>
+      <div class="logo">
+        <img src="logo.png" height="68" width="68" alt="Today I Learned Logo" />
+        <h1>Today I Learned</h1>
+      </div>
+
+      <button>Share a fact</button>
     </header>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -53,7 +54,9 @@
             <p>
               React is being developed by Meta (formerly facebook)
               <a href="https://opensource.fb.com/">(Source)</a>
-              <span class="tag">##technology##</span>
+              <span class="tag" style="background-color: #3b82f6"
+                >##technology##</span
+              >
             </p>
             <span
               ><!--div?span?-->
@@ -67,7 +70,9 @@
               <a href="https://en.wikipedia.org/wiki/Lisbon" target="_parent"
                 >(Source)</a
               >
-              <span class="tag">##society##</span>
+              <span class="tag" style="background-color: #eab308"
+                >##society##</span
+              >
             </p>
             <div>
               <button>👍 <b>23</b></button>
