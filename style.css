@@ -105,6 +105,19 @@ h1 {
   margin-left: auto; /* 요소를 부모 컨테이너 내에서 오른쪽으로 밀어 정렬할 때 사용*/
 }
 
+.vote-buttons button {
+  border: none;
+  background-color: #78716c;
+  font-size: 18px;
+  padding: 6px 12px;
+  border-radius: 100px;
+
+  color: inherit; /* 텍스트 색깔 강제 inherit*/
+  font-family: inherit;
+  font-weight: 600; /* 글자 bold 정도*/
+  cursor: pointer;
+}
+
 ul {
   list-style: none; /*리스트 옆에 있는 . 이 없어짐*/
 }
