@@ -22,6 +22,7 @@ body {
   background-color: #44403c;
   margin-bottom: 40px;
   padding: 16px 40px;
+text-align: center;
 }
 
 h1 {
@@ -31,6 +32,8 @@ h1 {
   font-family: "Coiny", sans-serif; /* google font , 보조 font(google font가 없을 경우)*/
 
   /* color: #fafaf9; */ /* inheritance 사용 */
+line-height: 1;
+  margin-top: 6px;
 }
 
 .fact {
@@ -50,6 +53,9 @@ h1 {
   font-size: 14px;
   font-family: "Coiny", sans-serif;
   /* color: #fafaf9; */
+padding-top: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 ul {
