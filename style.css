@@ -34,9 +34,11 @@ body {
 .fact-form {
   background-color: #44403c;
   margin-bottom: 40px;
-  padding: 16px 40px;
-
-  text-align: center;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: 16px;
 }
 .main {
   display: grid;
@@ -88,6 +90,7 @@ h1 {
   align-items: center;
   gap: 24px;
   letter-spacing: -1px; /* 글자 간격 */
+  border-radius: 16px;
 }
 
 .tag {
@@ -194,4 +197,31 @@ ul {
   width: 100%;
   /* btn 클래스에서 적용된 그라데이션 해제 */
   background-image: none;
+}
+
+.fact-form input,
+.fact-form select {
+  width: 220px;
+  background-color: #78716c;
+  border: none;
+  border-radius: 100px;
+  padding: 16px;
+  font-size: 18px;
+  color: inherit;
+  font-family: inherit;
+}
+
+.fact-form input::placeholder {
+  color: #a8a29e; /*placeholder의 default text 보이도록 설정*/
+}
+
+.fact-form input:first-child {
+  /* input의 첫번째 요소 (default text)부분*/
+  flex-grow: 1; /*take up all the space if it requires */
+}
+
+.fact-form span {
+  font-weight: 600;
+  font-size: 18px;
+  margin-right: 18px;
 }
