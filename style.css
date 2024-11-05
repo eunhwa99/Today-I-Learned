@@ -58,6 +58,10 @@ body {
   height: 68px;
 }
 
+.category {
+  margin-bottom: 16px;
+}
+
 h1 {
   font-size: 42px;
   text-transform: uppercase;
@@ -118,4 +122,38 @@ ul {
 .source:hover,
 .source:active {
   color: #3b82f6;
+}
+
+.btn {
+  border: none;
+  font-family: "Coiny", sams-serif;
+  line-height: 1;
+  text-transform: uppercase;
+  font-size: 17px;
+  padding: 16px 0 13px;
+
+  /* button에 그라데이션 넣기 */
+  /* linear-gradient에 to right/to left/to bottom/to top 을 넣거나 아래처럼 각도를 넣어줄 수도 있다.*/
+  background-image: linear-gradient(135deg, #3b82f6, #ef4444, #16a34a, #eab308);
+
+  /* button은 parent(현재 body)의 특성을 interit 하지 않지만, 아래 설정을 통해 강제로 interit 하도록 설정 가능*/
+  color: inherit;
+}
+
+/* btn-large가 btn 밑에 있어야 btn-large 특성이 btn 특성을 덮어쓸 수 있다.! */
+.btn-large {
+  font-size: 20px;
+  padding: 20px 32px 17px;
+}
+
+.btn-all-categories {
+  margin-bottom: 16px;
+  /* parent 와의 관계를 계산해서 width 설정 */
+  width: 100%;
+}
+
+.btn-category {
+  width: 100%;
+  /* btn 클래스에서 적용된 그라데이션 해제 */
+  background-image: none;
 }

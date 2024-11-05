@@ -17,7 +17,8 @@
           />
           <h1>Today I Learned</h1>
         </div>
-        <button>Share a fact</button>
+        <!-- 아래처럼 2개의 class 를 가질 수 있다. -->
+        <button class="btn btn-large">Share a fact</button>
       </header>
 
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -40,15 +41,31 @@
           <option value="science">Science</option>
           <option value="society">Society</option>
         </select>
-        <button>Post</button>
+        <button class="btn btn-large">Post</button>
       </form>
 
       <main class="main">
         <aside>
           <ul>
-            <li><button>All</button></li>
-            <li><button>Technology</button></li>
-            <li><button>Society</button></li>
+            <li class="category">
+              <button class="btn btn-all-categories">All</button>
+            </li>
+            <li class="category">
+              <button
+                class="btn btn-category"
+                style="background-color: #3b82f6"
+              >
+                Technology
+              </button>
+            </li>
+            <li class="category">
+              <button
+                class="btn btn-category"
+                style="background-color: #16a34a"
+              >
+                Society
+              </button>
+            </li>
           </ul>
         </aside>
 
