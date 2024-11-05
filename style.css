@@ -98,6 +98,7 @@ h1 {
   padding-top: 3px;
   padding-left: 10px;
   padding-right: 10px;
+  border-radius: 100px;
 }
 
 .vote-buttons {
@@ -140,6 +141,11 @@ ul {
   color: inherit;
 
   transition: 0.3s;
+  /* 버튼 둥그렇게 만들기 -> 큰 값을 넣어주기! 일정 크기 이상 넣어도 변화 없음. 작은 값 넣으면 덜 둥글해짐*/
+  border-radius: 100px;
+
+  /* 커서 올렸을 때 마우스가 손 모양으로 변경됨 */
+  cursor: pointer;
 }
 
 /* button 에 커서 올렸을 때 움직이도록 설정 */
