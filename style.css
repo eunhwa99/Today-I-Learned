@@ -40,10 +40,18 @@ body {
   gap: 16px;
   border-radius: 16px;
 }
+
 .main {
   display: grid;
   grid-template-columns: 250px 1fr; /*1번 열은 고정된 크기를 가지고, 2번 열은 나머지 가용 공간을 기준으로 유연한 크기를 가짐*/
   gap: 48px; /* 두 열 사이의 간격 */
+}
+
+/* width가 900px 이하인 곳에서 적용되는 코드 */
+@media (max-width: 900px) {
+  .main {
+    grid-template-columns: 1fr; /* 1개의 column만 공간을 차지하도록 설정 */
+  }
 }
 
 /* Elements */
@@ -91,6 +99,15 @@ h1 {
   gap: 24px;
   letter-spacing: -1px; /* 글자 간격 */
   border-radius: 16px;
+}
+
+/* width가 1200px 이하인 곳에서 적용되는 코드 */
+@media (max-width: 1200px) {
+  .fact {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+  }
 }
 
 .tag {
@@ -224,4 +241,20 @@ ul {
   font-weight: 600;
   font-size: 18px;
   margin-right: 18px;
+}
+
+@media (max-width: 1000px) {
+  body {
+    padding: 32px 48px;
+  }
+
+  .fact-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fact-form input,
+  .fact-form select {
+    width: auto; /* 위에서 width를 지정함으로 인해 제대로 stretch가 안되는 문제 해결*/
+  }
 }
