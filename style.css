@@ -10,10 +10,18 @@ body {
   background-color: #292524;
   color: #fafaf9;
   font-family: "Sono", sans-serif;
-  padding: 40px;
+  padding: 48px 64px;
 }
 
 /* MAIN Layout */
+.container {
+  max-width: 1500px; /* element가 max-width로 설정된 값보다 커지지 않음 */
+  /* 아래 두 줄로 body 부분을 중앙에 정렬할 수 있다.*/
+  /*margin-left: auto;
+  margin-right: auto;*/
+  margin: 0 auto; /*위의 두 줄과 같은 의미*/
+}
+
 .header {
   /*margin: 40px;*/
   margin-bottom: 40px;
@@ -42,6 +50,12 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.logo img {
+  /*selector를 이렇게도 지정할 수 있다. (logo 클래스의 img 태그)*/
+  width: 68px;
+  height: 68px;
 }
 
 h1 {
