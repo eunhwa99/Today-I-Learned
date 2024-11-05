@@ -138,6 +138,13 @@ ul {
 
   /* button은 parent(현재 body)의 특성을 interit 하지 않지만, 아래 설정을 통해 강제로 interit 하도록 설정 가능*/
   color: inherit;
+
+  transition: 0.3s;
+}
+
+/* button 에 커서 올렸을 때 움직이도록 설정 */
+.btn:hover {
+  transform: scale(110%) rotate(-2deg);
 }
 
 /* btn-large가 btn 밑에 있어야 btn-large 특성이 btn 특성을 덮어쓸 수 있다.! */
