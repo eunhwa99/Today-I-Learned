@@ -103,6 +103,12 @@ h1 {
 
 .vote-buttons {
   margin-left: auto; /* 요소를 부모 컨테이너 내에서 오른쪽으로 밀어 정렬할 때 사용*/
+
+  display: flex; /* voting 버튼들이 side-by-side 로 정렬되도록 flex container로 지정 */
+  gap: 8px;
+
+  flex-shrink: 0; /* vote-buttons는 fact 클래스 안에 있는 flex item이기도 하다!*/
+  /*이렇게 지정해서 버튼 안에 글자가 수직으로 정렬되지 않도록 설정한다. */
 }
 
 .vote-buttons button {
@@ -116,6 +122,12 @@ h1 {
   font-family: inherit;
   font-weight: 600; /* 글자 bold 정도*/
   cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.vote-buttons button:hover {
+  background-color: #292524;
 }
 
 ul {
