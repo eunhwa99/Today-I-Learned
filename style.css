@@ -56,6 +56,11 @@ h1 {
   padding: 16px 24px; /*vertical horizontal*/
   /*padding-left를 padding 밑에 쓰면 적용되지만, padding 전에 사용하면 적용 안됨 -> padding: 16px 이 padding-left 속성을 덮어쓰기 때문*/
   /*border: 4px dashed red;*/ /*border 지정 가능*/
+
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  letter-spacing: -1px; /* 글자 간격 */
 }
 
 .tag {
@@ -66,6 +71,10 @@ h1 {
   padding-top: 3px;
   padding-left: 10px;
   padding-right: 10px;
+}
+
+.vote-buttons {
+  margin-left: auto; /* 요소를 부모 컨테이너 내에서 오른쪽으로 밀어 정렬할 때 사용*/
 }
 
 ul {
