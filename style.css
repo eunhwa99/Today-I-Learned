@@ -103,3 +103,19 @@ h1 {
 ul {
   list-style: none; /*리스트 옆에 있는 . 이 없어짐*/
 }
+
+/* comma로 여러 selector 지정 가능*/
+.source:link,
+.source:visited {
+  /* href 로 link가 있는 곳에만 style 적용 (a 태그에 href 없이 사용하는 경우도 있음)*/
+  color: #a8a29e;
+
+  text-decoration: none; /* 텍스트 아래선 제거*/
+  margin-left: 12px;
+  transition: 0.3s; /*link,visited 상태에서 hover/active 상태로 갈 때 smooth 하게 스타일 변경됨*/
+}
+
+.source:hover,
+.source:active {
+  color: #3b82f6;
+}
