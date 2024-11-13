@@ -18,7 +18,7 @@
           <h1>Today I Learned</h1>
         </div>
         <!-- 아래처럼 2개의 class 를 가질 수 있다. -->
-        <button class="btn btn-large">Share a fact</button>
+        <button class="btn btn-large btn-open">Share a fact</button>
       </header>
 
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -30,7 +30,7 @@
 
       <link href="style.css" rel="stylesheet" />
 
-      <form class="fact-form">
+      <form class="fact-form hidden">
         <input type="text" placeholder="default text" maxlength="200" />
         <!--<p> 로 감싸면 아예 새로운 줄로 가기 떄문에 span 사용한다!!-->
         <span>200</span>
@@ -110,5 +110,6 @@
         </section>
       </main>
     </div>
+    <script src="script.js"></script>
   </body>
 </html>

@@ -13,6 +13,10 @@ body {
   padding: 48px 64px;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* MAIN Layout */
 .container {
   max-width: 1500px; /* element가 max-width로 설정된 값보다 커지지 않음 */
