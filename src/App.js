@@ -90,7 +90,7 @@ function FactList() {
                 (Source)
               </a>
             </p>
-            <span className="tag" style="background-color: #3b82f6">
+            <span className="tag" style={{ backgroundColor: "#3b82f6" }}>
               technology
             </span>
             <div className="vote-buttons">
