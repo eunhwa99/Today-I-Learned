@@ -19,12 +19,26 @@ function App() {
 
         <button className="btn btn-large btn-open">Share a fact</button>
       </header>
-      <CategoryFilter />
+
+      <NewFactForm />
+
+      <main className="main">
+        <CategoryFilter />
+        <FactList />
+      </main>
     </>
   );
 }
 
+function NewFactForm() {
+  return <form className="fact-form">Fact form</form>;
+}
+
 function CategoryFilter() {
   return <aside>Category filter</aside>;
+}
+
+function FactList() {
+  return <section>Facts list</section>;
 }
 export default App;
