@@ -5,20 +5,34 @@ const factsList = document.querySelector(".facts-list");
 
 // Create DOM elements: Render facts in list
 factsList.innerHTML = "";
-const initialFacts = [
-  {
-    id: 1,
-    text: "React is being developed by Meta (formerly facebook)",
-    source: "https://opensource.fb.com/",
-    category: "technology",
-    votesInteresting: 8,
-    votesMindBlowing: 3,
-    votesFalse: 1,
-    createdIn: 2024,
-  },
-];
-createFactsList(initialFacts);
-// console.log(initialFacts);
+
+loadFacts();
+// Load DATA from DB
+async function loadFacts() {
+  const res = await fetch("url", {
+    headers: {
+      apikey: "",
+      authorization: "",
+    },
+  });
+  const data = await res.json();
+  console.log(data);
+  createFactsList(data);
+}
+
+// const initialFacts = [
+//   {
+//     id: 1,
+//     text: "React is being developed by Meta (formerly facebook)",
+//     source: "https://opensource.fb.com/",
+//     category: "technology",
+//     votesInteresting: 8,
+//     votesMindBlowing: 3,
+//     votesFalse: 1,
+//     createdIn: 2024,
+//   },
+// ];
+// createFactsList(initialFacts);
 
 function createFactsList(dataArr) {
   const htmlArr = dataArr.map(
