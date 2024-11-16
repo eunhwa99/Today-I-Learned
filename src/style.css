@@ -18,7 +18,7 @@ body {
 }
 
 /* MAIN Layout */
-.container {
+#root {
   max-width: 1500px; /* element가 max-width로 설정된 값보다 커지지 않음 */
   /* 아래 두 줄로 body 부분을 중앙에 정렬할 수 있다.*/
   /*margin-left: auto;
