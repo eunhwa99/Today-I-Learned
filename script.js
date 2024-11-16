@@ -3,10 +3,20 @@ const btn = document.querySelector(".btn-open");
 const form = document.querySelector(".fact-form");
 const factsList = document.querySelector(".facts-list");
 
+const CATEGORIES = [
+  { name: "technology", color: "#3b82ff" },
+  { name: "science", color: "##16a34a" },
+  { name: "finance", color: "#ef4444" },
+  { name: "society", color: "#eab308" },
+  { name: "entertainment", color: "#db2777" },
+  { name: "health", color: "#14b8a6" },
+  { name: "history", color: "#197316" },
+  { name: "news", color: "#8b5cf6" },
+];
 // Create DOM elements: Render facts in list
 factsList.innerHTML = "";
 
-loadFacts();
+// loadFacts();
 // Load DATA from DB
 async function loadFacts() {
   const res = await fetch("url", {
@@ -20,19 +30,19 @@ async function loadFacts() {
   createFactsList(data);
 }
 
-// const initialFacts = [
-//   {
-//     id: 1,
-//     text: "React is being developed by Meta (formerly facebook)",
-//     source: "https://opensource.fb.com/",
-//     category: "technology",
-//     votesInteresting: 8,
-//     votesMindBlowing: 3,
-//     votesFalse: 1,
-//     createdIn: 2024,
-//   },
-// ];
-// createFactsList(initialFacts);
+const initialFacts = [
+  {
+    id: 1,
+    text: "React is being developed by Meta (formerly facebook)",
+    source: "https://opensource.fb.com/",
+    category: "technology",
+    votesInteresting: 8,
+    votesMindBlowing: 3,
+    votesFalse: 1,
+    createdIn: 2024,
+  },
+];
+createFactsList(initialFacts);
 
 function createFactsList(dataArr) {
   const htmlArr = dataArr.map(
@@ -46,7 +56,9 @@ function createFactsList(dataArr) {
                   >(Source)</a
                 >
               </p>
-              <span class="tag" style="background-color: #3b82f6"
+              <span class="tag" style="background-color: ${
+                CATEGORIES.find((cat) => cat.name === fact.category).color
+              }"
                 >${fact.category}</span
               >`
   );
@@ -62,14 +74,3 @@ btn.addEventListener("click", function () {
     form.classList.add("hidden");
   }
 });
-
-const CATEGORIES = [
-  { name: "technology", color: "#3b82ff" },
-  { name: "science", color: "##16a34a" },
-  { name: "finance", color: "#ef4444" },
-  { name: "society", color: "#eab308" },
-  { name: "entertainment", color: "#db2777" },
-  { name: "health", color: "#14b8a6" },
-  { name: "history", color: "#197316" },
-  { name: "news", color: "#8b5cf6" },
-];
