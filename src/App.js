@@ -79,7 +79,7 @@ function FactList() {
     <section>
       <ul className="facts-list">
         {facts.map((f) => (
-          <Fact fact={f} />
+          <Fact key={f.id} fact={f} />
         ))}
       </ul>
     </section>
@@ -89,7 +89,7 @@ function FactList() {
 function Fact(props) {
   console.log("props", props);
   const { fact } = props; // unpack!
-  <li key={fact.id} className="fact">
+  <li className="fact">
     <p>
       {fact.text}
       <a className="source" href={fact.source} target="_blank">
