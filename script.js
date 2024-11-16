@@ -7,3 +7,5 @@ btn.addEventListener("click", function () {
     form.classList.add("hidden");
   }
 });
+const factsList = document.querySelector(".facts-list");
+factsList.innerHTML = "";
