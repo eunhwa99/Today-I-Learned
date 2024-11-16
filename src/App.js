@@ -1,3 +1,5 @@
+import "./style.css";
+
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   return (
