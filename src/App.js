@@ -1,9 +1,10 @@
+import { Fragment } from "react";
 import "./style.css";
 
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   return (
-    <div>
+    <>
       {/* html: class -> jsx: className */}
       <header className="header">
         <div className="logo">
@@ -19,7 +20,7 @@ function App() {
         <button className="btn btn-large btn-open">Share a fact</button>
       </header>
       <CategoryFilter />
-    </div>
+    </>
   );
 }
 
