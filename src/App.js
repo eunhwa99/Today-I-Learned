@@ -72,12 +72,25 @@ function Header({ showForm, setShowForm }) {
 }
 function NewFactForm() {
   const [text, setText] = useState("");
+  const [source, setSource] = useState("");
+  const [category, setCategory] = useState("");
+
   return (
     <form className="fact-form">
-      <input type="text" placeholder="What's new?" />
+      <input
+        type="text"
+        placeholder="What's new?"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
       <span>200</span>
-      <input type="text" placeholder="source" />
-      <select>
+      <input
+        type="text"
+        placeholder="source"
+        value={source}
+        onChange={(e) => setSource(e.target.value)}
+      />
+      <select value={category} onChange={(e) => setCategory(e.target.value)}>
         <option value="">Choose category</option>
         {CATEGORIES.map((cat) => (
           <option key={cat.name} value={cat.name}>
