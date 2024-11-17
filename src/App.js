@@ -70,6 +70,16 @@ function Header({ showForm, setShowForm }) {
     </header>
   );
 }
+
+function isValidUrl(url) {
+  try {
+    new URL(url); // URL 객체로 변환
+    return true; // 유효한 URL
+  } catch (e) {
+    return false; // 유효하지 않은 URL
+  }
+}
+
 function NewFactForm() {
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
@@ -79,6 +89,20 @@ function NewFactForm() {
 
   function handleSubmit(e) {
     e.preventDefault(); // once form submitted, the page will reload everything, so prevent this!
+
+    if (text && isValidUrl(source) && category && textLength <= 200) {
+      const newFact = {
+        id: 1,
+        text: text,
+        source: source,
+        category: category,
+        votesInteresting: 0,
+        votesMindBlowing: 0,
+        votesFalse: 0,
+        createdIn: new Date().getFullYear(),
+      };
+      console.log(newFact.createdIn);
+    }
   }
 
   return (
