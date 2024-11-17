@@ -196,9 +196,10 @@ function FactList({ facts, currentCategory }) {
   );
 }
 
-function Fact(props) {
-  console.log("props", props);
-  const { fact } = props; // unpack!
+function Fact({ fact }) {
+  const [intertesting, setInteresting] = useState(fact.votesInteresting);
+  const [mindBlowing, setMindBlowing] = useState(fact.votesMindBlowing);
+
   return (
     <li className="fact">
       <p>
@@ -217,8 +218,12 @@ function Fact(props) {
         {fact.category}
       </span>
       <div className="vote-buttons">
-        <button>👍 {fact.votesInteresting}</button>
-        <button>❤️ {fact.votesMindBlowing}</button>
+        <button onClick={() => setInteresting((pre) => pre + 1)}>
+          👍 {intertesting}
+        </button>
+        <button onClick={() => setMindBlowing((pre) => pre + 1)}>
+          ❤️ {mindBlowing}
+        </button>
       </div>
     </li>
   );
