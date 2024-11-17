@@ -75,15 +75,18 @@ function NewFactForm() {
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
 
+  const textLength = text.length;
+
   return (
     <form className="fact-form">
       <input
         type="text"
         placeholder="What's new?"
+        maxlength="200"
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <span>200</span>
+      <span>{200 - textLength}</span>
       <input
         type="text"
         placeholder="source"
