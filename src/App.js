@@ -38,14 +38,17 @@ const initialFacts = [
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const [showForm, setShowForm] = useState(false);
+  const [facts, setFacts] = useState(initialFacts);
   return (
     <>
       <Header showForm={showForm} setShowForm={setShowForm} />
-      {showForm ? <NewFactForm /> : null}
+      {showForm ? (
+        <NewFactForm setFacts={setFacts} setShowForm={setShowForm} />
+      ) : null}
 
       <main className="main">
         <CategoryFilter />
-        <FactList />
+        <FactList facts={facts} setFacts={setFacts} />
       </main>
     </>
   );
@@ -80,7 +83,7 @@ function isValidUrl(url) {
   }
 }
 
-function NewFactForm() {
+function NewFactForm({ setFacts, setShowForm }) {
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
@@ -92,7 +95,7 @@ function NewFactForm() {
 
     if (text && isValidUrl(source) && category && textLength <= 200) {
       const newFact = {
-        id: 1,
+        id: initialFacts.length + 1,
         text: text,
         source: source,
         category: category,
@@ -101,7 +104,16 @@ function NewFactForm() {
         votesFalse: 0,
         createdIn: new Date().getFullYear(),
       };
-      console.log(newFact.createdIn);
+
+      // Add new fact
+      setFacts((curFact) => [newFact, ...curFact]);
+
+      // init fields
+      setText("");
+      setSource("");
+      setCategory("");
+
+      setShowForm(false);
     }
   }
 
@@ -158,9 +170,7 @@ function CategoryFilter() {
   );
 }
 
-function FactList() {
-  const facts = initialFacts;
-
+function FactList({ facts }) {
   return (
     <section>
       <ul className="facts-list">
