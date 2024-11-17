@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { useState } from "react";
 import "./style.css";
 const CATEGORIES = [
   { name: "technology", color: "#3b82ff" },
@@ -37,6 +38,7 @@ const initialFacts = [
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const appTitle = "Today I Learned";
+  const [showForm, setShowForm] = useState(false);
   return (
     <>
       {/* html: class -> jsx: className */}
@@ -51,10 +53,15 @@ function App() {
           <h1>{appTitle}</h1>
         </div>
 
-        <button className="btn btn-large btn-open">Share a fact</button>
+        <button
+          className="btn btn-large btn-open"
+          onClick={() => setShowForm((show) => !show)}
+        >
+          Share a fact
+        </button>
       </header>
 
-      <NewFactForm />
+      {showForm ? <NewFactForm /> : null}
 
       <main className="main">
         <CategoryFilter />
