@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import "./style.css";
 const CATEGORIES = [
   { name: "technology", color: "#3b82ff" },
-  { name: "science", color: "##16a34a" },
+  { name: "science", color: "#16a34a" },
   { name: "finance", color: "#ef4444" },
   { name: "society", color: "#eab308" },
   { name: "entertainment", color: "#db2777" },
@@ -69,7 +69,27 @@ function NewFactForm() {
 }
 
 function CategoryFilter() {
-  return <aside>Category filter</aside>;
+  return (
+    <aside>
+      <ul>
+        <li class="category">
+          <button class="btn btn-all-categories">All</button>
+        </li>
+        {CATEGORIES.map((cat) => (
+          <li key={cat.name} className="category">
+            <button
+              className="btn btn-category"
+              style={{
+                backgroundColor: cat.color,
+              }}
+            >
+              {cat.name}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
 }
 
 function FactList() {
