@@ -77,12 +77,16 @@ function NewFactForm() {
 
   const textLength = text.length;
 
+  function handleSubmit(e) {
+    e.preventDefault(); // once form submitted, the page will reload everything, so prevent this!
+  }
+
   return (
-    <form className="fact-form">
+    <form className="fact-form" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="What's new?"
-        maxlength="200"
+        maxLength="200"
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
@@ -101,7 +105,7 @@ function NewFactForm() {
           </option>
         ))}
       </select>
-      <button class="btn btn-large">Post</button>
+      <button className="btn btn-large">Post</button>
     </form>
   );
 }
@@ -110,8 +114,8 @@ function CategoryFilter() {
   return (
     <aside>
       <ul>
-        <li class="category">
-          <button class="btn btn-all-categories">All</button>
+        <li className="category">
+          <button className="btn btn-all-categories">All</button>
         </li>
         {CATEGORIES.map((cat) => (
           <li key={cat.name} className="category">
