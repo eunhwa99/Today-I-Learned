@@ -39,6 +39,8 @@ const initialFacts = [
 function App() {
   const [showForm, setShowForm] = useState(false);
   const [facts, setFacts] = useState(initialFacts);
+  const [currentCategory, setCurrentCategory] = useState("all");
+
   return (
     <>
       <Header showForm={showForm} setShowForm={setShowForm} />
@@ -47,8 +49,8 @@ function App() {
       ) : null}
 
       <main className="main">
-        <CategoryFilter />
-        <FactList facts={facts} setFacts={setFacts} />
+        <CategoryFilter setCurrentCategory={setCurrentCategory} />
+        <FactList facts={facts} currentCategory={currentCategory} />
       </main>
     </>
   );
@@ -146,12 +148,17 @@ function NewFactForm({ setFacts, setShowForm }) {
   );
 }
 
-function CategoryFilter() {
+function CategoryFilter({ setCurrentCategory }) {
   return (
     <aside>
       <ul>
         <li className="category">
-          <button className="btn btn-all-categories">All</button>
+          <button
+            className="btn btn-all-categories"
+            onClick={() => setCurrentCategory("all")}
+          >
+            All
+          </button>
         </li>
         {CATEGORIES.map((cat) => (
           <li key={cat.name} className="category">
@@ -160,6 +167,7 @@ function CategoryFilter() {
               style={{
                 backgroundColor: cat.color,
               }}
+              onClick={() => setCurrentCategory(cat.name)}
             >
               {cat.name}
             </button>
@@ -170,13 +178,19 @@ function CategoryFilter() {
   );
 }
 
-function FactList({ facts }) {
+function FactList({ facts, currentCategory }) {
   return (
     <section>
       <ul className="facts-list">
-        {facts.map((f) => (
-          <Fact key={f.id} fact={f} />
-        ))}
+        {facts
+          .filter(
+            (f) =>
+              currentCategory == "all" ||
+              currentCategory.toLowerCase() === f.category
+          )
+          .map((f) => (
+            <Fact key={f.id} fact={f} />
+          ))}
       </ul>
     </section>
   );
