@@ -1,5 +1,4 @@
-import { Fragment } from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "./style.css";
 const CATEGORIES = [
   { name: "technology", color: "#3b82ff" },
@@ -199,33 +198,104 @@ function FactList({ facts, currentCategory }) {
 function Fact({ fact }) {
   const [intertesting, setInteresting] = useState(fact.votesInteresting);
   const [mindBlowing, setMindBlowing] = useState(fact.votesMindBlowing);
+  const [modalOpen, setModalOpen] = useState(false); // 모달 오픈 상태 관리
+  const [userNote, setUserNote] = useState(""); // 사용자가 추가하는 노트
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+  const handleNoteChange = (e) => setUserNote(e.target.value);
 
   return (
-    <li className="fact">
-      <p>
-        {fact.text}
-        <a className="source" href={fact.source} target="_blank">
-          (Source)
-        </a>
-      </p>
-      <span
-        className="tag"
-        style={{
-          backgroundColor: CATEGORIES.find((cat) => cat.name === fact.category)
-            .color,
-        }}
-      >
-        {fact.category}
-      </span>
-      <div className="vote-buttons">
-        <button onClick={() => setInteresting((pre) => pre + 1)}>
-          👍 {intertesting}
-        </button>
-        <button onClick={() => setMindBlowing((pre) => pre + 1)}>
-          ❤️ {mindBlowing}
-        </button>
-      </div>
-    </li>
+    <>
+      <li className="fact" onClick={openModal}>
+        <p>
+          {fact.text}
+          <a
+            className="source"
+            href={fact.source}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            (Source)
+          </a>
+        </p>
+        <span
+          className="tag"
+          style={{
+            backgroundColor: CATEGORIES.find(
+              (cat) => cat.name === fact.category
+            ).color,
+          }}
+        >
+          {fact.category}
+        </span>
+        <div className="vote-buttons">
+          <button onClick={() => setInteresting((prev) => prev + 1)}>
+            👍 {intertesting}
+          </button>
+          <button onClick={() => setMindBlowing((prev) => prev + 1)}>
+            ❤️ {mindBlowing}
+          </button>
+        </div>
+      </li>
+
+      {/* 모달 */}
+      {modalOpen && (
+        <Modal
+          fact={fact}
+          userNote={userNote}
+          onNoteChange={handleNoteChange}
+          onClose={closeModal}
+        />
+      )}
+    </>
   );
 }
+
+// 모달 컴포넌트
+function Modal({ fact, userNote, onNoteChange, onClose }) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button className="close-button" onClick={onClose}>
+          Close
+        </button>
+        <h2>Fact Details</h2>
+        <p>
+          <strong>Text:</strong> {fact.text}
+        </p>
+        <p>
+          <strong>Source:</strong>{" "}
+          <a href={fact.source} target="_blank" rel="noopener noreferrer">
+            {fact.source}
+          </a>
+        </p>
+        <p>
+          <strong>Created In:</strong> {fact.createdIn}
+        </p>
+
+        <h3 className="note-title">NOTE</h3>
+        <div className="note-container">
+          <textarea
+            value={userNote}
+            onChange={onNoteChange}
+            placeholder="Write your detailed note here..."
+            rows="5"
+            style={{ width: "100%" }}
+          />
+          <button
+            onClick={() => {
+              //alert("Saved!!");
+              onClose();
+            }}
+            className="save-button"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default App;
