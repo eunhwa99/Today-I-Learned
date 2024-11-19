@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import "./style.css";
+
 const CATEGORIES = [
   { name: "technology", color: "#3b82ff" },
   { name: "science", color: "#16a34a" },
@@ -37,8 +38,21 @@ const initialFacts = [
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const [showForm, setShowForm] = useState(false);
-  const [facts, setFacts] = useState(initialFacts);
+  const [facts, setFacts] = useState([]);
   const [currentCategory, setCurrentCategory] = useState("all");
+
+  useEffect(() => {
+    // Spring Boot API 호출 (GET)
+    fetch("http://localhost:8080/til/item-list")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setFacts(data);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the data!", error);
+      });
+  }, []);
 
   return (
     <>
@@ -107,15 +121,25 @@ function NewFactForm({ setFacts, setShowForm }) {
       };
 
       // Add new fact
-      setFacts((curFact) => [newFact, ...curFact]);
-
-      // init fields
-      setText("");
-      setSource("");
-      setCategory("");
-
-      setShowForm(false);
+      // POST 요청을 보내는 fetch
+      fetch("http://localhost:8080/til/item", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // JSON 형식으로 보내기
+        },
+        body: JSON.stringify(newFact), // formData를 JSON 형식으로 변환하여 전송
+      })
+        .then((response) => console.log(response.text())) // 응답을 먼저 텍스트로 확인
+        .catch((error) => {
+          console.error("Error during fetch:", error);
+        });
     }
+    // init fields
+    setText("");
+    setSource("");
+    setCategory("");
+
+    setShowForm(false);
   }
 
   return (
