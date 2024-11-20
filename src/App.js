@@ -23,7 +23,6 @@ function App() {
     fetch("http://localhost:8080/til/item-list")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setFacts(data);
       })
       .catch((error) => {
@@ -35,9 +34,12 @@ function App() {
     <>
       <Header showForm={showForm} setShowForm={setShowForm} />
       {showForm ? (
-        <NewFactForm setFacts={setFacts} setShowForm={setShowForm} />
+        <NewFactForm
+          facts={facts}
+          setFacts={setFacts}
+          setShowForm={setShowForm}
+        />
       ) : null}
-
       <main className="main">
         <CategoryFilter setCurrentCategory={setCurrentCategory} />
         <FactList facts={facts} currentCategory={currentCategory} />
@@ -75,7 +77,7 @@ function isValidUrl(url) {
   }
 }
 
-function NewFactForm({ setShowForm }) {
+function NewFactForm({ facts, setFacts, setShowForm }) {
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
@@ -105,7 +107,8 @@ function NewFactForm({ setShowForm }) {
         },
         body: JSON.stringify(newFact), // formData를 JSON 형식으로 변환하여 전송
       })
-        .then((response) => console.log(response.text())) // 응답을 먼저 텍스트로 확인
+        .then((response) => response.json())
+        .then((data) => setFacts([data, ...facts]))
         .catch((error) => {
           console.error("Error during fetch:", error);
         });
