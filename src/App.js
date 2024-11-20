@@ -12,29 +12,6 @@ const CATEGORIES = [
   { name: "news", color: "#8b5cf6" },
 ];
 
-const initialFacts = [
-  {
-    id: 1,
-    text: "React is being developed by Meta (formerly facebook)",
-    source: "https://opensource.fb.com/",
-    category: "technology",
-    votesInteresting: 8,
-    votesMindBlowing: 3,
-    votesFalse: 1,
-    createdIn: 2024,
-  },
-  {
-    id: 2,
-    text: " Lisbon is the capital of Portugal",
-    source: "https://en.wikipedia.org/wiki/Lisbon",
-    category: "society",
-    votesInteresting: 23,
-    votesMindBlowing: 3,
-    votesFalse: 1,
-    createdIn: 2022,
-  },
-];
-
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const [showForm, setShowForm] = useState(false);
@@ -98,7 +75,7 @@ function isValidUrl(url) {
   }
 }
 
-function NewFactForm({ setFacts, setShowForm }) {
+function NewFactForm({ setShowForm }) {
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
@@ -110,7 +87,6 @@ function NewFactForm({ setFacts, setShowForm }) {
 
     if (text && isValidUrl(source) && category && textLength <= 200) {
       const newFact = {
-        id: initialFacts.length + 1,
         text: text,
         source: source,
         category: category,
@@ -220,8 +196,12 @@ function FactList({ facts, currentCategory }) {
 }
 
 function Fact({ fact }) {
-  const [intertesting, setInteresting] = useState(fact.votesInteresting);
-  const [mindBlowing, setMindBlowing] = useState(fact.votesMindBlowing);
+  const [intertesting, setInteresting] = useState(
+    parseInt(fact.votesInteresting, 10)
+  );
+  const [mindBlowing, setMindBlowing] = useState(
+    parseInt(fact.votesMindBlowing, 10)
+  );
   const [modalOpen, setModalOpen] = useState(false); // 모달 오픈 상태 관리
   const [userNote, setUserNote] = useState(""); // 사용자가 추가하는 노트
 
@@ -231,8 +211,8 @@ function Fact({ fact }) {
 
   return (
     <>
-      <li className="fact" onClick={openModal}>
-        <p>
+      <li className="fact">
+        <p onClick={openModal}>
           {fact.text}
           <a
             className="source"
