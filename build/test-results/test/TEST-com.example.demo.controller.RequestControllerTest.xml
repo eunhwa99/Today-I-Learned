@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.demo.controller.RequestControllerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-24T04:30:49" hostname="eunhwaui-MacBookAir.local" time="20.358">
+  <properties/>
+  <testcase name="test()" classname="com.example.demo.controller.RequestControllerTest" time="20.358"/>
+  <system-out><![CDATA[Temp time: 0 seconds
+Total time: 20 seconds
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
