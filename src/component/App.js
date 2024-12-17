@@ -113,6 +113,15 @@ function NewFactForm({ facts, setFacts, setShowForm }) {
         .catch((error) => {
           console.error("Error during fetch:", error);
         });
+    } else {
+      if (text.length === 0) {
+        alert("Please write a fact!");
+        return;
+      }
+      if (!isValidUrl(source)) {
+        alert("Please give valid url!");
+        return;
+      }
     }
     // init fields
     setText("");
