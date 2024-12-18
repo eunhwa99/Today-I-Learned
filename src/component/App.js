@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/style.css";
 import Modal from "./Modal";
+import { FETCHDATA, SAVEDATA, UPDATEDATA, DELETEDATA } from "./Router.js";
 
 const CATEGORIES = [
   { name: "technology", color: "#3b82ff" },
@@ -19,17 +20,10 @@ function App() {
   const [facts, setFacts] = useState([]);
   const [currentCategory, setCurrentCategory] = useState("all");
 
+  // 컴포넌트가 마운트될 때 아이템 리스트를 가져옴
   useEffect(() => {
-    // Spring Boot API 호출 (GET)
-    fetch("http://localhost:8080/til/item-list")
-      .then((response) => response.json())
-      .then((data) => {
-        setFacts(data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the data!", error);
-      });
-  }, []);
+    FETCHDATA(setFacts);
+  }, []); // 빈 배열은 컴포넌트가 처음 렌더링될 때만 호출되도록 함
 
   return (
     <>
@@ -42,8 +36,15 @@ function App() {
         />
       ) : null}
       <main className="main">
-        <CategoryFilter setCurrentCategory={setCurrentCategory} />
-        <FactList facts={facts} currentCategory={currentCategory} />
+        <CategoryFilter
+          setCurrentCategory={setCurrentCategory}
+          setFacts={setFacts}
+        />
+        <FactList
+          facts={facts}
+          currentCategory={currentCategory}
+          setFacts={setFacts}
+        />
       </main>
     </>
   );
@@ -78,7 +79,7 @@ function isValidUrl(url) {
   }
 }
 
-function NewFactForm({ facts, setFacts, setShowForm }) {
+function NewFactForm({ setFacts, setShowForm }) {
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
@@ -90,36 +91,24 @@ function NewFactForm({ facts, setFacts, setShowForm }) {
 
     if (text && isValidUrl(source) && category && textLength <= 200) {
       const newFact = {
+        id: "",
         text: text,
         source: source,
         category: category,
         votesInteresting: 0,
         votesMindBlowing: 0,
-        votesFalse: 0,
         createdIn: new Date().getFullYear(),
       };
 
-      // Add new fact
-      // POST 요청을 보내는 fetch
-      fetch("http://localhost:8080/til/item", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // JSON 형식으로 보내기
-        },
-        body: JSON.stringify(newFact), // formData를 JSON 형식으로 변환하여 전송
-      })
-        .then((response) => response.json())
-        .then((data) => setFacts([data, ...facts]))
-        .catch((error) => {
-          console.error("Error during fetch:", error);
-        });
+      // POST 요청을 처리하는 함수
+      SAVEDATA(newFact, setFacts);
     } else {
       if (text.length === 0) {
         alert("Please write a fact!");
         return;
       }
-      if (!isValidUrl(source)) {
-        alert("Please give valid url!");
+      if (source.length != 0 && !isValidUrl(source)) {
+        alert("Please give a valid url!");
         return;
       }
     }
@@ -160,7 +149,7 @@ function NewFactForm({ facts, setFacts, setShowForm }) {
   );
 }
 
-function CategoryFilter({ setCurrentCategory }) {
+function CategoryFilter({ setCurrentCategory, setFacts }) {
   return (
     <aside>
       <ul>
@@ -190,7 +179,7 @@ function CategoryFilter({ setCurrentCategory }) {
   );
 }
 
-function FactList({ facts, currentCategory }) {
+function FactList({ facts, currentCategory, setFacts }) {
   return (
     <section>
       <ul className="facts-list">
@@ -201,14 +190,14 @@ function FactList({ facts, currentCategory }) {
               currentCategory.toLowerCase() === f.category
           )
           .map((f) => (
-            <Fact key={f.id} fact={f} />
+            <Fact setFacts={setFacts} fact={f} />
           ))}
       </ul>
     </section>
   );
 }
 
-function Fact({ fact }) {
+function Fact({ fact, setFacts }) {
   const [intertesting, setInteresting] = useState(
     parseInt(fact.votesInteresting, 10)
   );
@@ -222,9 +211,40 @@ function Fact({ fact }) {
   const closeModal = () => setModalOpen(false);
   const handleNoteChange = (e) => setUserNote(e.target.value);
 
+  const handleRightClick = (event, id) => {
+    event.preventDefault();
+    const confirmDelete = window.confirm("Delete?");
+    if (confirmDelete) {
+      DELETEDATA(id, setFacts);
+    }
+  };
+
+  // 상태 업데이트와 서버 요청을 순차적으로 처리하는 방식
+
+  const handleInterestingClick = (factId) => {
+    // 상태 업데이트
+    setInteresting((prev) => {
+      const newCount = prev + 1; // 이전 값에 1을 더한 새로운 값
+      UPDATEDATA(factId, "votesInteresting", newCount); // 상태가 업데이트된 후에 서버에 보내기
+      return newCount; // 새 상태 값 반환
+    });
+  };
+
+  const hanndleMindBlowingClick = (factId) => {
+    // 상태 업데이트
+    setInteresting((prev) => {
+      const newCount = prev + 1; // 이전 값에 1을 더한 새로운 값
+      UPDATEDATA(factId, "votesMindBlowing", newCount); // 상태가 업데이트된 후에 서버에 보내기
+      return newCount; // 새 상태 값 반환
+    });
+  };
+
   return (
     <>
-      <li className="fact">
+      <li
+        className="fact"
+        onContextMenu={(event) => handleRightClick(event, fact.id)}
+      >
         <p onClick={openModal}>
           {fact.text}
           <a
@@ -247,10 +267,10 @@ function Fact({ fact }) {
           {fact.category}
         </span>
         <div className="vote-buttons">
-          <button onClick={() => setInteresting((prev) => prev + 1)}>
+          <button onClick={() => handleInterestingClick(fact.id)}>
             👍 {intertesting}
           </button>
-          <button onClick={() => setMindBlowing((prev) => prev + 1)}>
+          <button onClick={() => hanndleMindBlowingClick(fact.id)}>
             ❤️ {mindBlowing}
           </button>
         </div>
