@@ -6,6 +6,7 @@ import com.example.demo.service.TILItemService
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.web.bind.annotation.*
 
@@ -22,7 +23,7 @@ class RequestController(private val itemService: TILItemService, private val ser
     fun getItemList(): List<TILItem> {
         logger.info("Get item")
 
-        return itemService.getAllItem()
+        return itemService.getAllItems()
     }
 
     @PostMapping("/item")
@@ -30,4 +31,18 @@ class RequestController(private val itemService: TILItemService, private val ser
         logger.info(item.toString())
         return itemService.createItem(item)
     }
+
+    @PatchMapping("/item")
+    fun updateItemVotes(@RequestParam id: String, @RequestBody attributes: Map<String, String>){
+        itemService.updateItem(id, attributes)
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)  // HTTP 204 No Content 상태 코드 반환
+    @DeleteMapping("/item")
+    fun deleteItem(@RequestParam id: String) {
+        // 삭제 로직 수행
+
+        itemService.deleteItem(id)
+    }
+
 }

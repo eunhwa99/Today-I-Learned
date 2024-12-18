@@ -9,12 +9,11 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Builder
 data class ItemEntity(
     @Id
-    private val id: String = ObjectId.get().toString(),
+    val id: String = ObjectId.get().toString(),
     val text: String,
     val source: String,
     val category: String,
     val votesInteresting: String,
     val votesMindBlowing: String,
-    val votesFalse: Int,
     val createdIn: String
 )
