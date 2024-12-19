@@ -41,9 +41,9 @@ class RequestController(private val itemService: TILItemService, private val ser
     @ResponseStatus(HttpStatus.NO_CONTENT)  // HTTP 204 No Content 상태 코드 반환
     @DeleteMapping("/item")
     fun deleteItem(@RequestParam id: String) {
-        logger.info("Delete an item: id(${id})")
         // 삭제 로직 수행
-        itemService.deleteItem(id)
+        val result = itemService.deleteItem(id)
+        logger.info("Delete an item: ${result})")
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.demo.service
 
 import com.example.demo.domain.TILItem
 import com.example.demo.`port-out`.ItemRepositoryInterface
+import com.mongodb.client.result.UpdateResult
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,15 +30,15 @@ class TILItemService(private val itemRepository: ItemRepositoryInterface) {
         return item
     }
 
-    fun updateItem(id: String, attributes: Map<String, String>){
-       itemRepository.updateItem(id, attributes)
-        logger.info("Update item with id: $id -> ${getItem(id)}")
+    fun updateItem(id: String, attributes: Map<String, String>): UpdateResult {
+        return itemRepository.updateItem(id, attributes)
     }
 
-    fun deleteItem(id: String) {
-        val item = getItem(id) ?: return  // 아이템이 없으면 삭제를 진행하지 않음
+    fun deleteItem(id: String): TILItem? {
+        val item = getItem(id) ?: return null
         itemRepository.deleteItem(id)
-        logger.info("Deleted item with id: $id -> $item")
+        return item
     }
+
 
 }
