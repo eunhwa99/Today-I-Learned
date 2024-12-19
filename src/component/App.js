@@ -71,6 +71,7 @@ function Header({ showForm, setShowForm }) {
 }
 
 function isValidUrl(url) {
+  if (url.length == 0) return true;
   try {
     new URL(url); // URL 객체로 변환
     return true; // 유효한 URL
@@ -198,45 +199,46 @@ function FactList({ facts, currentCategory, setFacts }) {
 }
 
 function Fact({ fact, setFacts }) {
-  const [intertesting, setInteresting] = useState(
+  // 상태 초기화
+  const [intersting, setInteresting] = useState(
     parseInt(fact.votesInteresting, 10)
   );
   const [mindBlowing, setMindBlowing] = useState(
     parseInt(fact.votesMindBlowing, 10)
   );
-  const [modalOpen, setModalOpen] = useState(false); // 모달 오픈 상태 관리
-  const [userNote, setUserNote] = useState(""); // 사용자가 추가하는 노트
+  const [modalOpen, setModalOpen] = useState(false);
+  const [userNote, setUserNote] = useState("");
 
+  // 모달 열기/닫기 함수
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
+
+  // 사용자 노트 업데이트 함수
   const handleNoteChange = (e) => setUserNote(e.target.value);
 
+  // 우클릭 삭제 처리
   const handleRightClick = (event, id) => {
     event.preventDefault();
-    const confirmDelete = window.confirm("Delete?");
-    if (confirmDelete) {
+    if (window.confirm("Delete?")) {
       DELETEDATA(id, setFacts);
     }
   };
 
-  // 상태 업데이트와 서버 요청을 순차적으로 처리하는 방식
+  const handleVoteClick = async (factId, voteType) => {
+    const voteStateUpdater =
+      voteType === "interesting" ? setInteresting : setMindBlowing;
+    const currentVotes = voteType === "interesting" ? intersting : mindBlowing;
 
-  const handleInterestingClick = (factId) => {
     // 상태 업데이트
-    setInteresting((prev) => {
-      const newCount = prev + 1; // 이전 값에 1을 더한 새로운 값
-      UPDATEDATA(factId, "votesInteresting", newCount); // 상태가 업데이트된 후에 서버에 보내기
-      return newCount; // 새 상태 값 반환
-    });
-  };
+    const newCount = currentVotes + 1;
+    voteStateUpdater(newCount);
 
-  const hanndleMindBlowingClick = (factId) => {
-    // 상태 업데이트
-    setInteresting((prev) => {
-      const newCount = prev + 1; // 이전 값에 1을 더한 새로운 값
-      UPDATEDATA(factId, "votesMindBlowing", newCount); // 상태가 업데이트된 후에 서버에 보내기
-      return newCount; // 새 상태 값 반환
-    });
+    // 서버 요청 (비동기 처리)
+    await UPDATEDATA(
+      factId,
+      `votes${voteType.charAt(0).toUpperCase() + voteType.slice(1)}`,
+      newCount
+    );
   };
 
   return (
@@ -247,14 +249,16 @@ function Fact({ fact, setFacts }) {
       >
         <p onClick={openModal}>
           {fact.text}
-          <a
-            className="source"
-            href={fact.source}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            (Source)
-          </a>
+          {fact.source && (
+            <a
+              className="source"
+              href={fact.source}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              (Source)
+            </a>
+          )}
         </p>
         <span
           className="tag"
@@ -267,10 +271,10 @@ function Fact({ fact, setFacts }) {
           {fact.category}
         </span>
         <div className="vote-buttons">
-          <button onClick={() => handleInterestingClick(fact.id)}>
-            👍 {intertesting}
+          <button onClick={() => handleVoteClick(fact.id, "interesting")}>
+            👍 {intersting}
           </button>
-          <button onClick={() => hanndleMindBlowingClick(fact.id)}>
+          <button onClick={() => handleVoteClick(fact.id, "mindBlowing")}>
             ❤️ {mindBlowing}
           </button>
         </div>
