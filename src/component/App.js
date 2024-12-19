@@ -150,7 +150,7 @@ function NewFactForm({ setFacts, setShowForm }) {
   );
 }
 
-function CategoryFilter({ setCurrentCategory, setFacts }) {
+function CategoryFilter({ setCurrentCategory }) {
   return (
     <aside>
       <ul>
