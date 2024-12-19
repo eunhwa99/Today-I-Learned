@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/style.css";
 import Modal from "./Modal";
+import { FETCHDATA, SAVEDATA, UPDATEDATA, DELETEDATA } from "./Router.js";
 
 const CATEGORIES = [
   { name: "technology", color: "#3b82ff" },
@@ -19,17 +20,10 @@ function App() {
   const [facts, setFacts] = useState([]);
   const [currentCategory, setCurrentCategory] = useState("all");
 
+  // 컴포넌트가 마운트될 때 아이템 리스트를 가져옴
   useEffect(() => {
-    // Spring Boot API 호출 (GET)
-    fetch("http://localhost:8080/til/item-list")
-      .then((response) => response.json())
-      .then((data) => {
-        setFacts(data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the data!", error);
-      });
-  }, []);
+    FETCHDATA(setFacts);
+  }, []); // 빈 배열은 컴포넌트가 처음 렌더링될 때만 호출되도록 함
 
   return (
     <>
@@ -42,8 +36,15 @@ function App() {
         />
       ) : null}
       <main className="main">
-        <CategoryFilter setCurrentCategory={setCurrentCategory} />
-        <FactList facts={facts} currentCategory={currentCategory} />
+        <CategoryFilter
+          setCurrentCategory={setCurrentCategory}
+          setFacts={setFacts}
+        />
+        <FactList
+          facts={facts}
+          currentCategory={currentCategory}
+          setFacts={setFacts}
+        />
       </main>
     </>
   );
@@ -70,6 +71,7 @@ function Header({ showForm, setShowForm }) {
 }
 
 function isValidUrl(url) {
+  if (url.length == 0) return true;
   try {
     new URL(url); // URL 객체로 변환
     return true; // 유효한 URL
@@ -78,7 +80,7 @@ function isValidUrl(url) {
   }
 }
 
-function NewFactForm({ facts, setFacts, setShowForm }) {
+function NewFactForm({ setFacts, setShowForm }) {
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
@@ -90,36 +92,24 @@ function NewFactForm({ facts, setFacts, setShowForm }) {
 
     if (text && isValidUrl(source) && category && textLength <= 200) {
       const newFact = {
+        id: "",
         text: text,
         source: source,
         category: category,
         votesInteresting: 0,
         votesMindBlowing: 0,
-        votesFalse: 0,
         createdIn: new Date().getFullYear(),
       };
 
-      // Add new fact
-      // POST 요청을 보내는 fetch
-      fetch("http://localhost:8080/til/item", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // JSON 형식으로 보내기
-        },
-        body: JSON.stringify(newFact), // formData를 JSON 형식으로 변환하여 전송
-      })
-        .then((response) => response.json())
-        .then((data) => setFacts([data, ...facts]))
-        .catch((error) => {
-          console.error("Error during fetch:", error);
-        });
+      // POST 요청을 처리하는 함수
+      SAVEDATA(newFact, setFacts);
     } else {
       if (text.length === 0) {
         alert("Please write a fact!");
         return;
       }
-      if (!isValidUrl(source)) {
-        alert("Please give valid url!");
+      if (source.length != 0 && !isValidUrl(source)) {
+        alert("Please give a valid url!");
         return;
       }
     }
@@ -190,7 +180,7 @@ function CategoryFilter({ setCurrentCategory }) {
   );
 }
 
-function FactList({ facts, currentCategory }) {
+function FactList({ facts, currentCategory, setFacts }) {
   return (
     <section>
       <ul className="facts-list">
@@ -201,40 +191,74 @@ function FactList({ facts, currentCategory }) {
               currentCategory.toLowerCase() === f.category
           )
           .map((f) => (
-            <Fact key={f.id} fact={f} />
+            <Fact setFacts={setFacts} fact={f} />
           ))}
       </ul>
     </section>
   );
 }
 
-function Fact({ fact }) {
-  const [intertesting, setInteresting] = useState(
+function Fact({ fact, setFacts }) {
+  // 상태 초기화
+  const [intersting, setInteresting] = useState(
     parseInt(fact.votesInteresting, 10)
   );
   const [mindBlowing, setMindBlowing] = useState(
     parseInt(fact.votesMindBlowing, 10)
   );
-  const [modalOpen, setModalOpen] = useState(false); // 모달 오픈 상태 관리
-  const [userNote, setUserNote] = useState(""); // 사용자가 추가하는 노트
+  const [modalOpen, setModalOpen] = useState(false);
+  const [userNote, setUserNote] = useState("");
 
+  // 모달 열기/닫기 함수
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
+
+  // 사용자 노트 업데이트 함수
   const handleNoteChange = (e) => setUserNote(e.target.value);
+
+  // 우클릭 삭제 처리
+  const handleRightClick = (event, id) => {
+    event.preventDefault();
+    if (window.confirm("Delete?")) {
+      DELETEDATA(id, setFacts);
+    }
+  };
+
+  const handleVoteClick = async (factId, voteType) => {
+    const voteStateUpdater =
+      voteType === "interesting" ? setInteresting : setMindBlowing;
+    const currentVotes = voteType === "interesting" ? intersting : mindBlowing;
+
+    // 상태 업데이트
+    const newCount = currentVotes + 1;
+    voteStateUpdater(newCount);
+
+    // 서버 요청 (비동기 처리)
+    await UPDATEDATA(
+      factId,
+      `votes${voteType.charAt(0).toUpperCase() + voteType.slice(1)}`,
+      newCount
+    );
+  };
 
   return (
     <>
-      <li className="fact">
+      <li
+        className="fact"
+        onContextMenu={(event) => handleRightClick(event, fact.id)}
+      >
         <p onClick={openModal}>
           {fact.text}
-          <a
-            className="source"
-            href={fact.source}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            (Source)
-          </a>
+          {fact.source && (
+            <a
+              className="source"
+              href={fact.source}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              (Source)
+            </a>
+          )}
         </p>
         <span
           className="tag"
@@ -247,10 +271,10 @@ function Fact({ fact }) {
           {fact.category}
         </span>
         <div className="vote-buttons">
-          <button onClick={() => setInteresting((prev) => prev + 1)}>
-            👍 {intertesting}
+          <button onClick={() => handleVoteClick(fact.id, "interesting")}>
+            👍 {intersting}
           </button>
-          <button onClick={() => setMindBlowing((prev) => prev + 1)}>
+          <button onClick={() => handleVoteClick(fact.id, "mindBlowing")}>
             ❤️ {mindBlowing}
           </button>
         </div>
