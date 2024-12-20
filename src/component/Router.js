@@ -1,8 +1,10 @@
-export const FETCHDATA = (setFacts) => {
-  fetch("http://localhost:8080/til/item-list")
+export const FETCHDATA = (setFacts, page = 0, size = 10, category = "all") => {
+  const url = `http://localhost:8080/til/items?page=${page}&size=${size}&category=${category}`;
+
+  fetch(url)
     .then((response) => response.json())
     .then((data) => {
-      setFacts(data);
+      setFacts(data); // 데이터를 상태에 설정
     })
     .catch((error) => {
       console.error("There was an error fetching the data!", error);

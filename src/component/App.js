@@ -1,32 +1,28 @@
 import { useState, useEffect } from "react";
 import "../css/style.css";
-import Modal from "./Modal";
-import { FETCHDATA, SAVEDATA, UPDATEDATA, DELETEDATA } from "./Router.js";
-
-const CATEGORIES = [
-  { name: "technology", color: "#3b82ff" },
-  { name: "science", color: "#16a34a" },
-  { name: "finance", color: "#ef4444" },
-  { name: "society", color: "#eab308" },
-  { name: "entertainment", color: "#db2777" },
-  { name: "health", color: "#14b8a6" },
-  { name: "history", color: "#197316" },
-  { name: "news", color: "#8b5cf6" },
-];
+import { CategoriesProvider, useCategories } from "./CategoriesContext";
+import { FETCHDATA, SAVEDATA } from "./Router.js";
+import FactList from "./ItemList.js";
 
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const [showForm, setShowForm] = useState(false);
   const [facts, setFacts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
   const [currentCategory, setCurrentCategory] = useState("all");
 
   // 컴포넌트가 마운트될 때 아이템 리스트를 가져옴
   useEffect(() => {
-    FETCHDATA(setFacts);
-  }, []); // 빈 배열은 컴포넌트가 처음 렌더링될 때만 호출되도록 함
+    FETCHDATA(setFacts, currentPage, 10, currentCategory);
+  }, [currentPage, currentCategory]); // 페이지나 카테고리가 변경될 때마다 데이터를 다시 가져옴
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage); // 페이지 변경
+  };
 
   return (
-    <>
+    <CategoriesProvider>
       <Header showForm={showForm} setShowForm={setShowForm} />
       {showForm ? (
         <NewFactForm
@@ -35,6 +31,7 @@ function App() {
           setShowForm={setShowForm}
         />
       ) : null}
+
       <main className="main">
         <CategoryFilter
           setCurrentCategory={setCurrentCategory}
@@ -44,9 +41,10 @@ function App() {
           facts={facts}
           currentCategory={currentCategory}
           setFacts={setFacts}
+          pageSize={5}
         />
       </main>
-    </>
+    </CategoriesProvider>
   );
 }
 
@@ -81,6 +79,7 @@ function isValidUrl(url) {
 }
 
 function NewFactForm({ setFacts, setShowForm }) {
+  const CATEGORIES = useCategories();
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
   const [category, setCategory] = useState("");
@@ -151,6 +150,7 @@ function NewFactForm({ setFacts, setShowForm }) {
 }
 
 function CategoryFilter({ setCurrentCategory }) {
+  const CATEGORIES = useCategories();
   return (
     <aside>
       <ul>
@@ -177,119 +177,6 @@ function CategoryFilter({ setCurrentCategory }) {
         ))}
       </ul>
     </aside>
-  );
-}
-
-function FactList({ facts, currentCategory, setFacts }) {
-  return (
-    <section>
-      <ul className="facts-list">
-        {facts
-          .filter(
-            (f) =>
-              currentCategory == "all" ||
-              currentCategory.toLowerCase() === f.category
-          )
-          .map((f) => (
-            <Fact setFacts={setFacts} fact={f} />
-          ))}
-      </ul>
-    </section>
-  );
-}
-
-function Fact({ fact, setFacts }) {
-  // 상태 초기화
-  const [intersting, setInteresting] = useState(
-    parseInt(fact.votesInteresting, 10)
-  );
-  const [mindBlowing, setMindBlowing] = useState(
-    parseInt(fact.votesMindBlowing, 10)
-  );
-  const [modalOpen, setModalOpen] = useState(false);
-  const [userNote, setUserNote] = useState("");
-
-  // 모달 열기/닫기 함수
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
-
-  // 사용자 노트 업데이트 함수
-  const handleNoteChange = (e) => setUserNote(e.target.value);
-
-  // 우클릭 삭제 처리
-  const handleRightClick = (event, id) => {
-    event.preventDefault();
-    if (window.confirm("Delete?")) {
-      DELETEDATA(id, setFacts);
-    }
-  };
-
-  const handleVoteClick = async (factId, voteType) => {
-    const voteStateUpdater =
-      voteType === "interesting" ? setInteresting : setMindBlowing;
-    const currentVotes = voteType === "interesting" ? intersting : mindBlowing;
-
-    // 상태 업데이트
-    const newCount = currentVotes + 1;
-    voteStateUpdater(newCount);
-
-    // 서버 요청 (비동기 처리)
-    await UPDATEDATA(
-      factId,
-      `votes${voteType.charAt(0).toUpperCase() + voteType.slice(1)}`,
-      newCount
-    );
-  };
-
-  return (
-    <>
-      <li
-        className="fact"
-        onContextMenu={(event) => handleRightClick(event, fact.id)}
-      >
-        <p onClick={openModal}>
-          {fact.text}
-          {fact.source && (
-            <a
-              className="source"
-              href={fact.source}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              (Source)
-            </a>
-          )}
-        </p>
-        <span
-          className="tag"
-          style={{
-            backgroundColor: CATEGORIES.find(
-              (cat) => cat.name === fact.category
-            ).color,
-          }}
-        >
-          {fact.category}
-        </span>
-        <div className="vote-buttons">
-          <button onClick={() => handleVoteClick(fact.id, "interesting")}>
-            👍 {intersting}
-          </button>
-          <button onClick={() => handleVoteClick(fact.id, "mindBlowing")}>
-            ❤️ {mindBlowing}
-          </button>
-        </div>
-      </li>
-
-      {/* 모달 */}
-      {modalOpen && (
-        <Modal
-          fact={fact}
-          userNote={userNote}
-          onNoteChange={handleNoteChange}
-          onClose={closeModal}
-        />
-      )}
-    </>
   );
 }
 
