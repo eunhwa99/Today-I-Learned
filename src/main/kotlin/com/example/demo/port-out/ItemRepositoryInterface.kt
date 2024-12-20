@@ -1,6 +1,7 @@
 package com.example.demo.`port-out`
 
 import com.example.demo.domain.TILItem
+import com.example.demo.domain.TILItemFactory
 import com.example.demo.repository.ItemEntity
 import com.example.demo.repository.ItemRepository
 import com.mongodb.client.result.UpdateResult
@@ -24,22 +25,14 @@ class ItemRepositoryInterface(private val itemRepository: ItemRepository, privat
                 createdIn = item.createdIn
             )
         )
-        return TILItem(it.id, it.text, it.source, it.category, it.votesInteresting, it.votesMindBlowing, it.createdIn)
+        return TILItemFactory.from(it)
     }
 
     fun getAllItem(): List<TILItem> {
         val itemList = itemRepository.findAll()
         return itemList.asSequence()
             .map {
-                TILItem(
-                    it.id,
-                    it.text,
-                    it.source,
-                    it.category,
-                    it.votesInteresting,
-                    it.votesMindBlowing,
-                    it.createdIn
-                )
+                TILItemFactory.from(it)
             }
             .toList()
 
@@ -48,7 +41,7 @@ class ItemRepositoryInterface(private val itemRepository: ItemRepository, privat
     fun getItem(id: String): TILItem? {
         return itemRepository.findById(id)
             .map { it ->  // Optional 값이 존재하면 map을 사용하여 변환
-                TILItem(it.id, it.text, it.source, it.category, it.votesInteresting, it.votesMindBlowing, it.createdIn)
+               TILItemFactory.from(it)
             }
             .orElse(null)  // 값이 없으면 null 반환
     }
