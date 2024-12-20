@@ -17,10 +17,6 @@ function App() {
     FETCHDATA(setFacts, currentPage, 10, currentCategory);
   }, [currentPage, currentCategory]); // 페이지나 카테고리가 변경될 때마다 데이터를 다시 가져옴
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage); // 페이지 변경
-  };
-
   return (
     <CategoriesProvider>
       <Header showForm={showForm} setShowForm={setShowForm} />

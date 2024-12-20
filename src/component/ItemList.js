@@ -65,21 +65,21 @@ function FactList({ facts, currentCategory, setFacts, pageSize }) {
   };
 
   return (
-    <section>
-      <ul className="facts-list">
-        {currentPageFacts.map((f) => (
-          <Fact key={f.id} setFacts={setFacts} fact={f} />
-        ))}
-      </ul>
-
-      {/* Pagination 컴포넌트 추가 */}
+    <>
+      <section>
+        <ul className="facts-list">
+          {currentPageFacts.map((f) => (
+            <Fact key={f.id} setFacts={setFacts} fact={f} />
+          ))}
+        </ul>
+      </section>
       <Pagination
         currentPage={currentPage}
         totalItems={filteredFacts.length}
         pageSize={pageSize}
         onPageChange={handlePageChange}
       />
-    </section>
+    </>
   );
 }
 
