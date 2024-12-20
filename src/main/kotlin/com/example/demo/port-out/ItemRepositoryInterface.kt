@@ -5,11 +5,13 @@ import com.example.demo.domain.TILItemFactory
 import com.example.demo.repository.ItemEntity
 import com.example.demo.repository.ItemRepository
 import com.mongodb.client.result.UpdateResult
+import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Component
+
 
 @Component
 class ItemRepositoryInterface(private val itemRepository: ItemRepository, private val mongoTemplate: MongoTemplate) {
@@ -28,20 +30,26 @@ class ItemRepositoryInterface(private val itemRepository: ItemRepository, privat
         return TILItemFactory.from(it)
     }
 
-    fun getAllItem(): List<TILItem> {
-        val itemList = itemRepository.findAll()
-        return itemList.asSequence()
+    fun getAllItems(pageable: Pageable): List<TILItem> {
+        return itemRepository.findAll(pageable).content.asSequence()
             .map {
                 TILItemFactory.from(it)
             }
             .toList()
+    }
 
+    fun getItemsByCategory(cat: String, pageable: Pageable): List<TILItem> {
+        return itemRepository.findByCategory(cat, pageable).content.asSequence()
+            .map {
+                TILItemFactory.from(it)
+            }
+            .toList();
     }
 
     fun getItem(id: String): TILItem? {
         return itemRepository.findById(id)
             .map { it ->  // Optional 값이 존재하면 map을 사용하여 변환
-               TILItemFactory.from(it)
+                TILItemFactory.from(it)
             }
             .orElse(null)  // 값이 없으면 null 반환
     }

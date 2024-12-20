@@ -6,7 +6,9 @@ import com.mongodb.client.result.UpdateResult
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.data.domain.Pageable
 
 @Slf4j
 @Service
@@ -16,8 +18,15 @@ class TILItemService(private val itemRepository: ItemRepositoryInterface) {
         return itemRepository.saveItem(item)
     }
 
-    fun getAllItems(): List<TILItem> {
-        return itemRepository.getAllItem()
+    fun getAllItems(page: Int, size: Int): List<TILItem> {
+        return itemRepository.getAllItems(PageRequest.of(page, size))
+    }
+
+    fun getFactsByCategory(page: Int, size: Int, category: String): List<TILItem> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        if(category.equals("all"))
+           return getAllItems(page, size)
+        return itemRepository.getItemsByCategory(category, pageable)
     }
 
     fun getItem(id: String): TILItem? {
