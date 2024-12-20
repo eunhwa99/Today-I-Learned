@@ -39,3 +39,6 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+# Ignore build directory and its contents
+/build/*

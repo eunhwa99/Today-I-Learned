@@ -21,28 +21,29 @@ class RequestController(private val itemService: TILItemService, private val ser
 
     @GetMapping("/item-list")
     fun getItemList(): List<TILItem> {
-        logger.info("Get item")
-
+        logger.info("Get items")
         return itemService.getAllItems()
     }
 
     @PostMapping("/item")
     fun createItem(@RequestBody item: TILItem): TILItem {
-        logger.info(item.toString())
+        logger.info("Create an item: ${item}")
         return itemService.createItem(item)
     }
 
     @PatchMapping("/item")
     fun updateItemVotes(@RequestParam id: String, @RequestBody attributes: Map<String, String>){
-        itemService.updateItem(id, attributes)
+        val result = itemService.updateItem(id, attributes)
+        logger.info("Update attributes: ${attributes}, result: ${result}")
+
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)  // HTTP 204 No Content 상태 코드 반환
     @DeleteMapping("/item")
     fun deleteItem(@RequestParam id: String) {
         // 삭제 로직 수행
-
-        itemService.deleteItem(id)
+        val result = itemService.deleteItem(id)
+        logger.info("Delete an item: ${result})")
     }
 
 }

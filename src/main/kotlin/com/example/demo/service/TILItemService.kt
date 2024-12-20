@@ -2,10 +2,13 @@ package com.example.demo.service
 
 import com.example.demo.domain.TILItem
 import com.example.demo.`port-out`.ItemRepositoryInterface
+import com.mongodb.client.result.UpdateResult
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.data.domain.Pageable
 
 @Slf4j
 @Service
@@ -15,8 +18,15 @@ class TILItemService(private val itemRepository: ItemRepositoryInterface) {
         return itemRepository.saveItem(item)
     }
 
-    fun getAllItems(): List<TILItem> {
-        return itemRepository.getAllItem()
+    fun getAllItems(page: Int, size: Int): List<TILItem> {
+        return itemRepository.getAllItems(PageRequest.of(page, size))
+    }
+
+    fun getFactsByCategory(page: Int, size: Int, category: String): List<TILItem> {
+        val pageable: Pageable = PageRequest.of(page, size)
+        if(category.equals("all"))
+           return getAllItems(page, size)
+        return itemRepository.getItemsByCategory(category, pageable)
     }
 
     fun getItem(id: String): TILItem? {
@@ -29,15 +39,15 @@ class TILItemService(private val itemRepository: ItemRepositoryInterface) {
         return item
     }
 
-    fun updateItem(id: String, attributes: Map<String, String>){
-       itemRepository.updateItem(id, attributes)
-        logger.info("Update item with id: $id -> ${getItem(id)}")
+    fun updateItem(id: String, attributes: Map<String, String>): UpdateResult {
+        return itemRepository.updateItem(id, attributes)
     }
 
-    fun deleteItem(id: String) {
-        val item = getItem(id) ?: return  // 아이템이 없으면 삭제를 진행하지 않음
+    fun deleteItem(id: String): TILItem? {
+        val item = getItem(id) ?: return null
         itemRepository.deleteItem(id)
-        logger.info("Deleted item with id: $id -> $item")
+        return item
     }
+
 
 }

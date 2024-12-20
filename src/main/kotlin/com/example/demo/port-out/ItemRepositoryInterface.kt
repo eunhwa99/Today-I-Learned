@@ -1,13 +1,17 @@
 package com.example.demo.`port-out`
 
 import com.example.demo.domain.TILItem
+import com.example.demo.domain.TILItemFactory
 import com.example.demo.repository.ItemEntity
 import com.example.demo.repository.ItemRepository
+import com.mongodb.client.result.UpdateResult
+import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Component
+
 
 @Component
 class ItemRepositoryInterface(private val itemRepository: ItemRepository, private val mongoTemplate: MongoTemplate) {
@@ -23,54 +27,46 @@ class ItemRepositoryInterface(private val itemRepository: ItemRepository, privat
                 createdIn = item.createdIn
             )
         )
-        return TILItem(it.id, it.text, it.source, it.category, it.votesInteresting, it.votesMindBlowing, it.createdIn)
+        return TILItemFactory.from(it)
     }
 
-    fun getAllItem(): List<TILItem> {
-        val itemList = itemRepository.findAll()
-        return itemList.asSequence()
+    fun getAllItems(pageable: Pageable): List<TILItem> {
+        return itemRepository.findAll(pageable).content.asSequence()
             .map {
-                TILItem(
-                    it.id,
-                    it.text,
-                    it.source,
-                    it.category,
-                    it.votesInteresting,
-                    it.votesMindBlowing,
-                    it.createdIn
-                )
+                TILItemFactory.from(it)
             }
             .toList()
+    }
 
+    fun getItemsByCategory(cat: String, pageable: Pageable): List<TILItem> {
+        return itemRepository.findByCategory(cat, pageable).content.asSequence()
+            .map {
+                TILItemFactory.from(it)
+            }
+            .toList();
     }
 
     fun getItem(id: String): TILItem? {
         return itemRepository.findById(id)
             .map { it ->  // Optional 값이 존재하면 map을 사용하여 변환
-                TILItem(it.id, it.text, it.source, it.category, it.votesInteresting, it.votesMindBlowing, it.createdIn)
+                TILItemFactory.from(it)
             }
             .orElse(null)  // 값이 없으면 null 반환
     }
 
-    fun updateItem(id: String, attributes: Map<String, String>) {
+    fun updateItem(id: String, attributes: Map<String, String>): UpdateResult {
         // 아이템을 찾는 조건을 설정 (ID로 찾기)
-        val query = Query(Criteria.where("id").`is`(id))
+        val query = Query(Criteria.where("_id").`is`(id))
 
-        println(query.toString())        // 업데이트할 필드를 설정
         val update = Update()
         attributes.forEach { (key, value) ->
             update.set(key, value) // attributes의 각 key-value로 업데이트 필드 설정
         }
 
-
         // MongoDB에서 해당 아이템을 업데이트
-        val result = mongoTemplate.updateFirst(query, update, TILItem::class.java)
+        val result = mongoTemplate.updateFirst(query, update, ItemEntity::class.java)
 
-        if (result.matchedCount==0L) {
-            println("No document matched for update. ID: $id")
-        } else {
-            println("Updated document with ID: $id")
-        }
+        return result
     }
 
 
