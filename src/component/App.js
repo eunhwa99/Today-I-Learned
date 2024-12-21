@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "../css/style.css";
 import { CategoriesProvider, useCategories } from "./CategoriesContext";
 import { SAVEDATA, FETCHDATA } from "./Router.js";
@@ -10,23 +10,29 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [facts, setFacts] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalPageSize, setTotalPageSize] = useState(0);
+  const totalPageSize = useRef(0);
   const [currentCategory, setCurrentCategory] = useState("all");
 
   const loadFacts = async () => {
-    const data = await FETCHDATA(currentPage, 5, currentCategory); // 데이터를 비동기적으로 가져옴
+    const data = await FETCHDATA(
+      currentPage,
+      5,
+      totalPageSize.current,
+      currentCategory
+    );
     setFacts(data.items);
-    setTotalPageSize(data.totalPages);
+    totalPageSize.current = data.totalPages;
   };
+
+  useEffect(() => {
+    totalPageSize.current = 0;
+    if (currentPage !== 0) setCurrentPage(0);
+    else loadFacts();
+  }, [currentCategory]);
 
   useEffect(() => {
     loadFacts();
   }, [currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(0);
-    loadFacts();
-  }, [currentCategory]);
 
   return (
     <CategoriesProvider>
@@ -50,7 +56,7 @@ function App() {
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalPages={totalPageSize}
+          totalPages={totalPageSize.current}
         />
       </main>
     </CategoriesProvider>

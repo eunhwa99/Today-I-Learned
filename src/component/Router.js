@@ -1,5 +1,10 @@
-export const FETCHDATA = async (page = 0, size = 5, category = "all") => {
-  const url = `http://localhost:8080/til/items?page=${page}&size=${size}&category=${category}`;
+export const FETCHDATA = async (
+  page = 0,
+  size = 5,
+  totalPageSize = 0,
+  category = "all"
+) => {
+  const url = `http://localhost:8080/til/items?page=${page}&size=${size}&currentTotalPage=${totalPageSize}&category=${category}`;
 
   try {
     const response = await fetch(url);
