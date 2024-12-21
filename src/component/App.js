@@ -5,6 +5,7 @@ import { SAVEDATA, FETCHDATA } from "./Router.js";
 import FactList from "./ItemList.js";
 import Pagination from "./Pagination.js";
 
+var pageSize = 5;
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const [showForm, setShowForm] = useState(false);
@@ -16,7 +17,7 @@ function App() {
   const loadFacts = async () => {
     const data = await FETCHDATA(
       currentPage,
-      5,
+      pageSize,
       totalPageSize.current,
       currentCategory
     );
@@ -103,7 +104,17 @@ function NewFactForm({ setFacts, setShowForm }) {
 
   const saveFacts = async (newFact) => {
     const data = await SAVEDATA(newFact);
-    setFacts((prevFacts) => [data.item, ...prevFacts]);
+
+    setFacts((prevFacts) => {
+      // 새로운 데이터를 추가하고, pageSize개 이상이면 가장 오래된 아이템을 삭제
+      const updatedFacts = [data.item, ...prevFacts];
+
+      if (updatedFacts.length > pageSize) {
+        updatedFacts.pop(); // 배열의 마지막 요소(가장 오래된 아이템) 삭제
+      }
+
+      return updatedFacts;
+    });
   };
 
   function handleSubmit(e) {
