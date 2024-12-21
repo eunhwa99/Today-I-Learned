@@ -1,85 +1,22 @@
 import { useState } from "react";
-import "../css/Page.css";
 import Modal from "./Modal";
 import { useCategories } from "./CategoriesContext";
 import { UPDATEDATA, DELETEDATA } from "./Router.js";
-function Pagination({ currentPage, totalItems, pageSize, onPageChange }) {
-  const totalPages = Math.ceil(totalItems / pageSize);
 
-  const handlePrevPage = () => {
-    if (currentPage > 0) {
-      onPageChange(currentPage - 1); // 이전 페이지로 이동
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages - 1) {
-      onPageChange(currentPage + 1); // 다음 페이지로 이동
-    }
-  };
-
-  return (
-    <div className="pagination-container">
-      <a
-        href="#"
-        className={`previous ${currentPage === 0 ? "disabled" : ""}`}
-        onClick={handlePrevPage}
-        aria-disabled={currentPage === 0}
-      >
-        &#8249;
-      </a>
-      <span className="page-info">
-        Page {currentPage + 1} of {totalPages}
-      </span>
-      <a
-        href="#"
-        className={`next ${currentPage === totalPages - 1 ? "disabled" : ""}`}
-        onClick={handleNextPage}
-        aria-disabled={currentPage === totalPages - 1}
-      >
-        &#8250;
-      </a>
-    </div>
-  );
-}
-
-function FactList({ facts, currentCategory, setFacts, pageSize }) {
-  const [currentPage, setCurrentPage] = useState(0);
-
-  // 필터링된 facts 배열
-  const filteredFacts = facts.filter(
-    (f) =>
-      currentCategory === "all" || currentCategory.toLowerCase() === f.category
-  );
-
+function FactList({ facts, currentPage, setFacts, pageSize }) {
   // 현재 페이지에 해당하는 items만 slice로 추출
   const startIndex = currentPage * pageSize;
-  const currentPageFacts = filteredFacts.slice(
-    startIndex,
-    startIndex + pageSize
-  );
-
-  // 페이지 변경 함수
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  const currentPageFacts = facts.slice(startIndex, startIndex + pageSize);
+  console.log(facts);
 
   return (
-    <>
-      <section>
-        <ul className="facts-list">
-          {currentPageFacts.map((f) => (
-            <Fact key={f.id} setFacts={setFacts} fact={f} />
-          ))}
-        </ul>
-      </section>
-      <Pagination
-        currentPage={currentPage}
-        totalItems={filteredFacts.length}
-        pageSize={pageSize}
-        onPageChange={handlePageChange}
-      />
-    </>
+    <section>
+      <ul className="facts-list">
+        {currentPageFacts.map((f) => (
+          <Fact key={f.id} setFacts={setFacts} fact={f} />
+        ))}
+      </ul>
+    </section>
   );
 }
 

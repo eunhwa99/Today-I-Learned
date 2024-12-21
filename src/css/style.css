@@ -46,9 +46,23 @@ body {
 }
 
 .main {
+  display: flex;
+  flex-direction: column;
+}
+.content {
   display: grid;
   grid-template-columns: 250px 1fr; /*1번 열은 고정된 크기를 가지고, 2번 열은 나머지 가용 공간을 기준으로 유연한 크기를 가짐*/
   gap: 48px; /* 두 열 사이의 간격 */
+}
+
+.main > .content {
+  flex: 1;
+}
+
+/* main 컨테이너의 last child 에 적용됨 */
+.main > *:last-child {
+  /* aligns the last child element to the end of the flex container's cross axis (vertically in this case, since the flex direction is column).*/
+  align-self: flex-end;
 }
 
 /* width가 900px 이하인 곳에서 적용되는 코드 */
