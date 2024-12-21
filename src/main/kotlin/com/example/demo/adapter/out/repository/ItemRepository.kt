@@ -1,7 +1,9 @@
-package com.example.demo.repository
+package com.example.demo.adapter.out.repository
 
+import com.example.demo.adapter.out.entity.ItemEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.*
 

@@ -1,6 +1,6 @@
 package com.example.demo.domain
 
-import com.example.demo.repository.ItemEntity
+import com.example.demo.adapter.out.entity.ItemEntity
 
 data class TILItem(
     val id: String,

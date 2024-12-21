@@ -1,4 +1,4 @@
-package com.example.demo.repository
+package com.example.demo.adapter.out.entity
 
 import lombok.Builder
 import org.bson.types.ObjectId
