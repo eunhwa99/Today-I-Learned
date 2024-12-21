@@ -5,27 +5,28 @@ import { SAVEDATA, FETCHDATA } from "./Router.js";
 import FactList from "./ItemList.js";
 import Pagination from "./Pagination.js";
 
+var pageSize = 5;
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const [showForm, setShowForm] = useState(false);
   const [facts, setFacts] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPageSize = useRef(0);
+  const totalElements = useRef(0);
   const [currentCategory, setCurrentCategory] = useState("all");
 
   const loadFacts = async () => {
     const data = await FETCHDATA(
       currentPage,
-      5,
-      totalPageSize.current,
+      pageSize,
+      totalElements.current,
       currentCategory
     );
     setFacts(data.items);
-    totalPageSize.current = data.totalPages;
+    totalElements.current = data.totalCount;
   };
 
   useEffect(() => {
-    totalPageSize.current = 0;
+    totalElements.current = 0;
     if (currentPage !== 0) setCurrentPage(0);
     else loadFacts();
   }, [currentCategory]);
@@ -33,6 +34,7 @@ function App() {
   useEffect(() => {
     loadFacts();
   }, [currentPage]);
+  console.log(facts);
 
   return (
     <CategoriesProvider>
@@ -42,6 +44,7 @@ function App() {
           facts={facts}
           setFacts={setFacts}
           setShowForm={setShowForm}
+          totalElements={totalElements}
         />
       ) : null}
 
@@ -51,12 +54,19 @@ function App() {
             setCurrentCategory={setCurrentCategory}
             setFacts={setFacts}
           />
-          <FactList facts={facts} setFacts={setFacts} />
+          <FactList
+            facts={facts}
+            setFacts={setFacts}
+            currentPage={currentPage}
+            currentCategory={currentCategory}
+            totalElements={totalElements}
+          />
         </div>
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalPages={totalPageSize.current}
+          totalElements={totalElements.current}
+          pageSize={pageSize}
         />
       </main>
     </CategoriesProvider>
@@ -77,14 +87,14 @@ function Header({ showForm, setShowForm }) {
         className="btn btn-large btn-open"
         onClick={() => setShowForm((show) => !show)}
       >
-        {showForm ? "Close" : "Share a fact"}
+        {showForm ? "Close" : "Create"}
       </button>
     </header>
   );
 }
 
 function isValidUrl(url) {
-  if (url.length == 0) return true;
+  if (url.length === 0) return true;
   try {
     new URL(url); // URL 객체로 변환
     return true; // 유효한 URL
@@ -93,7 +103,7 @@ function isValidUrl(url) {
   }
 }
 
-function NewFactForm({ setFacts, setShowForm }) {
+function NewFactForm({ setFacts, setShowForm, totalElements }) {
   const CATEGORIES = useCategories();
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
@@ -103,13 +113,30 @@ function NewFactForm({ setFacts, setShowForm }) {
 
   const saveFacts = async (newFact) => {
     const data = await SAVEDATA(newFact);
-    setFacts((prevFacts) => [data.item, ...prevFacts]);
+    totalElements.current += 1;
+
+    setFacts((prevFacts) => {
+      // 새로운 데이터를 추가하고, pageSize개 이상이면 가장 오래된 아이템을 삭제
+      const updatedFacts = [data.item, ...prevFacts];
+
+      if (updatedFacts.length > pageSize) {
+        updatedFacts.pop(); // 배열의 마지막 요소(가장 오래된 아이템) 삭제
+      }
+
+      return updatedFacts;
+    });
   };
 
   function handleSubmit(e) {
     e.preventDefault(); // once form submitted, the page will reload everything, so prevent this!
 
     if (text && isValidUrl(source) && category && textLength <= 200) {
+      const today = new Date();
+
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      const day = today.getDate();
+
       const newFact = {
         id: "",
         text: text,
@@ -117,7 +144,9 @@ function NewFactForm({ setFacts, setShowForm }) {
         category: category,
         votesInteresting: 0,
         votesMindBlowing: 0,
-        createdIn: new Date().getFullYear(),
+        createdIn: `${year}-${String(month).padStart(2, "0")}-${String(
+          day
+        ).padStart(2, "0")}`,
       };
 
       saveFacts(newFact);
@@ -126,7 +155,7 @@ function NewFactForm({ setFacts, setShowForm }) {
         alert("Please write a fact!");
         return;
       }
-      if (source.length != 0 && !isValidUrl(source)) {
+      if (source.length !== 0 && !isValidUrl(source)) {
         alert("Please give a valid url!");
         return;
       }

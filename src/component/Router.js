@@ -1,10 +1,11 @@
+const endpoint = "http://localhost:8080/til";
 export const FETCHDATA = async (
   page = 0,
   size = 5,
-  totalPageSize = 0,
+  totalElements = 0,
   category = "all"
 ) => {
-  const url = `http://localhost:8080/til/items?page=${page}&size=${size}&currentTotalPage=${totalPageSize}&category=${category}`;
+  const url = `${endpoint}/items?page=${page}&size=${size}&currentTotalCount=${totalElements}&category=${category}`;
 
   try {
     const response = await fetch(url);
@@ -22,7 +23,7 @@ export const FETCHDATA = async (
 
 export const SAVEDATA = async (newFact) => {
   try {
-    const response = await fetch("http://localhost:8080/til/item", {
+    const response = await fetch(`${endpoint}/item`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +47,7 @@ export const UPDATEDATA = (id, key, data) => {
     [key]: data, // key를 속성명으로, data를 값으로 설정
   };
 
-  fetch(`http://localhost:8080/til/item?id=${id}`, {
+  fetch(`${endpoint}/item?id=${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -57,20 +58,16 @@ export const UPDATEDATA = (id, key, data) => {
   });
 };
 
-export const DELETEDATA = (id, setFacts) => {
-  // DELETE 요청을 보내는 fetch
-  fetch(`http://localhost:8080/til/item?id=${id}`, {
-    method: "DELETE",
-  })
-    .then((response) => {
-      if (response.ok) {
-        console.log("Item deleted successfully");
-        setFacts((prevItems) => prevItems.filter((item) => item.id !== id));
-      } else {
-        console.error("Failed to delete item");
-      }
-    })
-    .catch((error) => {
-      console.error("Error during fetch:", error);
+export const DELETEDATA = async (id) => {
+  try {
+    const response = await fetch(`${endpoint}/item?id=${id}`, {
+      method: "DELETE",
     });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error("There was an error deleting the data!", error);
+  }
 };
