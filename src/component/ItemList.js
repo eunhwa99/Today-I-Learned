@@ -1,21 +1,34 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { useCategories } from "./CategoriesContext";
-import { UPDATEDATA, DELETEDATA } from "./Router.js";
+import { FETCHDATA, UPDATEDATA, DELETEDATA } from "./Router.js";
 
-function FactList({ facts, setFacts }) {
+function FactList({
+  facts,
+  setFacts,
+  currentPage,
+  currentCategory,
+  totalElements,
+}) {
   return (
     <section>
       <ul className="facts-list">
         {facts.map((f) => (
-          <Fact key={f.id} setFacts={setFacts} fact={f} />
+          <Fact
+            key={f.id}
+            setFacts={setFacts}
+            fact={f}
+            currentPage={currentPage}
+            currentCategory={currentCategory}
+            totalElements={totalElements}
+          />
         ))}
       </ul>
     </section>
   );
 }
 
-function Fact({ fact, setFacts }) {
+function Fact({ fact, setFacts, currentPage, currentCategory, totalElements }) {
   const CATEGORIES = useCategories(); // CATEGORIES를 가져옴
 
   // 상태 초기화
@@ -35,11 +48,28 @@ function Fact({ fact, setFacts }) {
   // 사용자 노트 업데이트 함수
   const handleNoteChange = (e) => setUserNote(e.target.value);
 
+  const loadFacts = async () => {
+    const data = await FETCHDATA(
+      currentPage + 1,
+      1,
+      totalElements.current,
+      currentCategory
+    );
+    return data;
+  };
   // 우클릭 삭제 처리
-  const handleRightClick = (event, id) => {
+  const handleRightClick = async (event, id) => {
     event.preventDefault();
     if (window.confirm("Delete?")) {
-      DELETEDATA(id, setFacts);
+      await DELETEDATA(id);
+      const data = await loadFacts();
+      if (data === undefined)
+        setFacts((prevItems) => prevItems.filter((item) => item.id !== id));
+      console.log(data.items);
+      setFacts((prevItems) => [
+        ...prevItems.filter((item) => item.id !== id),
+        data.items[0],
+      ]);
     }
   };
 

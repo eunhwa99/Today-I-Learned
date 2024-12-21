@@ -1,6 +1,7 @@
 import "../css/Page.css";
-function Pagination({ currentPage, setCurrentPage, totalPages }) {
-  if (totalPages === 0) totalPages = 1;
+function Pagination({ currentPage, setCurrentPage, totalElements, pageSize }) {
+  var totalPages = Math.ceil(totalElements / pageSize);
+  // if (totalPages === 0) totalPages = 1;
 
   // 페이지 변경 함수
   const handlePageChange = (page) => {
