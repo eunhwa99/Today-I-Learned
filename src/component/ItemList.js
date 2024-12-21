@@ -53,7 +53,7 @@ function Fact({ fact, setFacts }) {
     voteStateUpdater(newCount);
 
     // 서버 요청 (비동기 처리)
-    await UPDATEDATA(
+    UPDATEDATA(
       factId,
       `votes${voteType.charAt(0).toUpperCase() + voteType.slice(1)}`,
       newCount

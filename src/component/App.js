@@ -95,6 +95,11 @@ function NewFactForm({ setFacts, setShowForm }) {
 
   const textLength = text.length;
 
+  const saveFacts = async (newFact) => {
+    const data = await SAVEDATA(newFact);
+    setFacts((prevFacts) => [data.item, ...prevFacts]);
+  };
+
   function handleSubmit(e) {
     e.preventDefault(); // once form submitted, the page will reload everything, so prevent this!
 
@@ -109,8 +114,7 @@ function NewFactForm({ setFacts, setShowForm }) {
         createdIn: new Date().getFullYear(),
       };
 
-      // POST 요청을 처리하는 함수
-      SAVEDATA(newFact, setFacts);
+      saveFacts(newFact);
     } else {
       if (text.length === 0) {
         alert("Please write a fact!");

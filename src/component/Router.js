@@ -12,25 +12,27 @@ export const FETCHDATA = async (page = 0, size = 5, category = "all") => {
     return data; // 데이터를 반환
   } catch (error) {
     console.error("There was an error fetching the data!", error);
-    throw error; // 에러를 호출한 쪽에 전달
   }
 };
 
-export const SAVEDATA = (newFact, setFacts) => {
-  fetch("http://localhost:8080/til/item", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newFact), // 서버에 보낼 데이터
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      setFacts((prevFacts) => [...prevFacts, data]); // 새 아이템을 기존 리스트에 추가
-    })
-    .catch((error) => {
-      console.error("There was an error posting the data!", error);
+export const SAVEDATA = async (newFact) => {
+  try {
+    const response = await fetch("http://localhost:8080/til/item", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newFact), // 서버에 보낼 데이터
     });
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json(); // JSON 응답을 파싱
+    return data; // 데이터를 반환
+  } catch (error) {
+    console.error("There was an error posting the data!", error);
+  }
 };
 
 export const UPDATEDATA = (id, key, data) => {
