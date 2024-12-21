@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/style.css";
 import { CategoriesProvider, useCategories } from "./CategoriesContext";
-import { FETCHDATA, SAVEDATA } from "./Router.js";
+import { SAVEDATA, FETCHDATA } from "./Router.js";
 import FactList from "./ItemList.js";
 import Pagination from "./Pagination.js";
 
@@ -9,27 +9,24 @@ import Pagination from "./Pagination.js";
 function App() {
   const [showForm, setShowForm] = useState(false);
   const [facts, setFacts] = useState([]);
-  const [lastId, setLastId] = useState(0); // 마지막으로 가져온 아이템 id
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [totalPageSize, setTotalPageSize] = useState(0);
   const [currentCategory, setCurrentCategory] = useState("all");
 
-  // 컴포넌트가 마운트될 때 아이템 리스트를 가져옴
-  useEffect(() => {
-    const loadFacts = async () => {
-      try {
-        const data = await FETCHDATA(lastId, currentPage, 10, currentCategory); // 데이터를 비동기적으로 가져옴
-        setFacts(data); // 데이터를 상태로 설정
-        if (data.length > 0) {
-          setLastId(data[data.length - 1].id); // 마지막 데이터를 이용해 lastId 업데이트
-        }
-      } catch (err) {
-        console.error("Error loading data:", err);
-      }
-    };
+  const loadFacts = async () => {
+    const data = await FETCHDATA(currentPage, 5, currentCategory); // 데이터를 비동기적으로 가져옴
+    setFacts(data.items);
+    setTotalPageSize(data.totalPages);
+  };
 
-    loadFacts(); // 데이터 로드 함수 호출
-  }, [currentPage, currentCategory]); // currentPage나 currentCategory가 변경될 때마다 실행
+  useEffect(() => {
+    loadFacts();
+  }, [currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(0);
+    loadFacts();
+  }, [currentCategory]);
 
   return (
     <CategoriesProvider>
@@ -48,18 +45,12 @@ function App() {
             setCurrentCategory={setCurrentCategory}
             setFacts={setFacts}
           />
-          <FactList
-            facts={facts}
-            currentPage={currentPage}
-            setFacts={setFacts}
-            pageSize={pageSize}
-          />
+          <FactList facts={facts} setFacts={setFacts} />
         </div>
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          totalItems={facts.length}
-          pageSize={pageSize}
+          totalPages={totalPageSize}
         />
       </main>
     </CategoriesProvider>

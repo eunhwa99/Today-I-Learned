@@ -1,14 +1,19 @@
-export const FETCHDATA = (setFacts, page = 0, size = 10, category = "all") => {
+export const FETCHDATA = async (page = 0, size = 5, category = "all") => {
   const url = `http://localhost:8080/til/items?page=${page}&size=${size}&category=${category}`;
 
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      setFacts(data); // 데이터를 상태에 설정
-    })
-    .catch((error) => {
-      console.error("There was an error fetching the data!", error);
-    });
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json(); // JSON 응답을 파싱
+    return data; // 데이터를 반환
+  } catch (error) {
+    console.error("There was an error fetching the data!", error);
+    throw error; // 에러를 호출한 쪽에 전달
+  }
 };
 
 export const SAVEDATA = (newFact, setFacts) => {

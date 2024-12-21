@@ -3,16 +3,11 @@ import Modal from "./Modal";
 import { useCategories } from "./CategoriesContext";
 import { UPDATEDATA, DELETEDATA } from "./Router.js";
 
-function FactList({ facts, currentPage, setFacts, pageSize }) {
-  // 현재 페이지에 해당하는 items만 slice로 추출
-  const startIndex = currentPage * pageSize;
-  const currentPageFacts = facts.slice(startIndex, startIndex + pageSize);
-  console.log(facts);
-
+function FactList({ facts, setFacts }) {
   return (
     <section>
       <ul className="facts-list">
-        {currentPageFacts.map((f) => (
+        {facts.map((f) => (
           <Fact key={f.id} setFacts={setFacts} fact={f} />
         ))}
       </ul>
