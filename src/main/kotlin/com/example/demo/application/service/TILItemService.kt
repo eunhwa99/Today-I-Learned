@@ -22,24 +22,24 @@ class TILItemService(private val itemRepository: ItemRepositoryInterface) {
     }
 
 
-    fun getAllItems(page: Int, size: Int, totalPage: Int): PagedItemInputDTO {
-        return if (totalPage == 0) {
+    fun getAllItems(page: Int, size: Int, totalCount: Long): PagedItemInputDTO {
+        return if (totalCount == 0L) {
             // 초기화 요청일 때
             loadInitialItems(page, size)
         } else {
             // 이후 요청일 때
-            loadNextItems(page, size, totalPage)
+            loadNextItems(page, size, totalCount)
         }
     }
 
     private fun loadInitialItems(page: Int, size: Int): PagedItemInputDTO {
         val items = itemRepository.loadInitialItems(PageRequest.of(page, size))
-        return PagedItemInputDTO(items.totalPages, convert(items.itemList))
+        return PagedItemInputDTO(items.totalCount, convert(items.itemList))
     }
 
-    private fun loadNextItems(page: Int, size: Int, totalPage: Int): PagedItemInputDTO {
+    private fun loadNextItems(page: Int, size: Int, totalCount: Long): PagedItemInputDTO {
         val items = itemRepository.loadNextItems(PageRequest.of(page, size))
-        return PagedItemInputDTO(totalPage, convert(items.itemList))
+        return PagedItemInputDTO(totalCount, convert(items.itemList))
     }
 
     private fun convert(itemList: List<ItemEntity>): List<TILItem> {
@@ -47,28 +47,28 @@ class TILItemService(private val itemRepository: ItemRepositoryInterface) {
     }
 
 
-    fun getItemsByCategory(page: Int, size: Int, totalPage: Int, category: String): PagedItemInputDTO {
+    fun getItemsByCategory(page: Int, size: Int, totalCount: Long, category: String): PagedItemInputDTO {
         if (category == "all")
-            return getAllItems(page, size, totalPage)
+            return getAllItems(page, size, totalCount)
 
         val pageable: Pageable = PageRequest.of(page, size)
-        return if (totalPage == 0) {
+        return if (totalCount == 0L) {
             // 초기화 요청일 때
             loadInitialItemsByCategory(pageable, category)
         } else {
             // 이후 요청일 때
-            loadNextItemsByCategory(pageable, category, totalPage)
+            loadNextItemsByCategory(pageable, category, totalCount)
         }
     }
 
     private fun loadInitialItemsByCategory(pageable: Pageable, category: String): PagedItemInputDTO {
         val items = itemRepository.loadInitialItemsByCategory(category, pageable)
-        return PagedItemInputDTO(items.totalPages, convert(items.itemList))
+        return PagedItemInputDTO(items.totalCount, convert(items.itemList))
     }
 
-    private fun loadNextItemsByCategory(pageable: Pageable, category: String, totalPage: Int): PagedItemInputDTO {
+    private fun loadNextItemsByCategory(pageable: Pageable, category: String, totalCount: Long): PagedItemInputDTO {
         val items = itemRepository.loadNextItemsByCategory(category, pageable)
-        return PagedItemInputDTO(totalPage, convert(items.itemList))
+        return PagedItemInputDTO(totalCount, convert(items.itemList))
     }
 
     fun getItem(id: String): TILItem? {

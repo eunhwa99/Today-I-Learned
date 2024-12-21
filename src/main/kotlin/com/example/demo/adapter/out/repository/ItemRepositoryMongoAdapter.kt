@@ -1,19 +1,18 @@
 package com.example.demo.adapter.out.repository
 
 import com.example.demo.adapter.out.entity.ItemEntity
-import com.example.demo.application.service.TILItemService
 import com.example.demo.domain.TILItem
 import com.example.demo.domain.TILItemFactory
 import com.example.demo.port.out.dto.ItemListOutputDTO
-import com.example.demo.port.out.repository.ItemRepositoryInterface
 import com.example.demo.port.out.dto.PagedItemOutputDTO
+import com.example.demo.port.out.repository.ItemRepositoryInterface
 import com.mongodb.client.result.UpdateResult
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.SliceImpl
+import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
@@ -41,37 +40,36 @@ class ItemRepositoryMongoAdapter(private val itemRepository: ItemRepository, pri
     private val logger: Logger = LoggerFactory.getLogger(ItemRepositoryInterface::class.java)
 
     override fun loadInitialItems(pageable: Pageable): PagedItemOutputDTO {
-        val page: Page<ItemEntity> = itemRepository.findAll(pageable)
+        val page: Page<ItemEntity> = itemRepository.findAllByOrderByCreatedInDesc(pageable)
         return PagedItemOutputDTO(
-            totalPages = page.totalPages,
+            totalCount = page.totalElements,
             itemList = page.content
         )
     }
 
     override fun loadInitialItemsByCategory(cat: String, pageable: Pageable): PagedItemOutputDTO {
-        val page: Page<ItemEntity> = itemRepository.findByCategory(cat, pageable)
+        val page: Page<ItemEntity> = itemRepository.findByCategoryOrderByCreatedInDesc(cat, pageable)
         return PagedItemOutputDTO(
-            totalPages = page.totalPages,
+            totalCount = page.totalElements,
             itemList = page.content
         )
     }
 
     override fun loadNextItems(pageable: Pageable): ItemListOutputDTO {
         val query = Query().with(pageable)
+        query.with(Sort.by(Sort.Order.desc("createdIn")))
         val items = mongoTemplate.find(query, ItemEntity::class.java) // 해당 페이지의 데이터만 가져옴
-
-        val totalElements = mongoTemplate.count(query, ItemEntity::class.java)
-        logger.info("LoadNextItems: total - ${totalElements}")
-
+        logger.info("LoadNextItems")
         return ItemListOutputDTO(items.toList())
     }
 
     override fun loadNextItemsByCategory(cat: String, pageable: Pageable): ItemListOutputDTO {
         val query = Query(Criteria.where("category").`is`(cat)).with(pageable)
+        query.with(Sort.by(Sort.Order.desc("createdIn")))
+
         val items = mongoTemplate.find(query, ItemEntity::class.java)
-        // 총 아이템 개수 (페이징을 위해 전체 아이템 개수도 계산)
-        val totalElements = mongoTemplate.count(query, ItemEntity::class.java)
-        logger.info("LoadNextItemsByCategory: total - ${totalElements}")
+
+        logger.info("LoadNextItemsByCategory")
         return ItemListOutputDTO(items.toList())
 
     }
