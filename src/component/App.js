@@ -110,6 +110,12 @@ function NewFactForm({ setFacts, setShowForm }) {
     e.preventDefault(); // once form submitted, the page will reload everything, so prevent this!
 
     if (text && isValidUrl(source) && category && textLength <= 200) {
+      const today = new Date();
+
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      const day = today.getDate();
+
       const newFact = {
         id: "",
         text: text,
@@ -117,7 +123,9 @@ function NewFactForm({ setFacts, setShowForm }) {
         category: category,
         votesInteresting: 0,
         votesMindBlowing: 0,
-        createdIn: new Date().getFullYear(),
+        createdIn: `${year}-${String(month).padStart(2, "0")}-${String(
+          day
+        ).padStart(2, "0")}`,
       };
 
       saveFacts(newFact);
