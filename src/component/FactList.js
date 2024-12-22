@@ -36,12 +36,6 @@ function Fact({ fact, state, dispatch }) {
   // 사용자 노트 업데이트 함수
   const handleNoteChange = (e) => setUserNote(e.target.value);
 
-  // const loadFacts = async () => {
-  //   const data = await FETCHDATA(currentPage, 5, currentCategory);
-  //   return data;
-  // };
-  loadFacts(state, dispatch);
-
   // 우클릭 삭제 처리
   const handleRightClick = async (event, id) => {
     event.preventDefault();

@@ -1,7 +1,6 @@
 import { useState, useEffect, useReducer } from "react";
 import "../css/style.css";
 import { CategoriesProvider, useCategories } from "./CategoriesContext";
-import { SAVEDATA, FETCHDATA } from "./Router.js";
 import FactList from "./FactList.js";
 import Pagination from "./Pagination.js";
 import { factsReducer, initialState } from "./Reducer.js";
@@ -11,11 +10,8 @@ var pageSize = 5;
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const [showForm, setShowForm] = useState(false);
-  // const [facts, setFacts] = useState([]);
-  // const [currentPage, setCurrentPage] = useState(0);
-  // const totalElements = useRef(0);
-  // const [currentCategory, setCurrentCategory] = useState("all");
   const [state, dispatch] = useReducer(factsReducer, initialState);
+  const [refresh, setRefresh] = useState(false);
   const {
     facts,
     isLoading,
@@ -24,14 +20,6 @@ function App() {
     currentCategory,
     totalElements,
   } = state;
-
-  // const loadFacts = async () => {
-  //   dispatch({ type: "FETCH_REQUEST" });
-  //   const data = await FETCHDATA(currentPage, pageSize, currentCategory);
-  //   dispatch({ type: "FETCH_SUCCESS", payload: data });
-  //   // setFacts(data.items);
-  //   // totalElements.current = data.totalCount;
-  // };
 
   useEffect(() => {
     console.log("currentCategory", currentCategory);
@@ -118,10 +106,6 @@ function NewFactForm({ state, dispatch, setShowForm }) {
         createdIn: "",
       };
 
-      // saveFacts(newFact);
-      // setCurrentCategory(category);
-      dispatch({ type: "SET_CATEGORY", category: "all" });
-      dispatch({ type: "SET_PAGE", page: 0 });
       saveFacts(newFact, state, dispatch);
     } else {
       if (text.length === 0) {
