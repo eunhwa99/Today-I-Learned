@@ -13,6 +13,7 @@ export const FETCHDATA = async (page = 0, size = 5, category = "all") => {
     return data; // 데이터를 반환
   } catch (error) {
     console.error("There was an error fetching the data!", error);
+    throw error;
   }
 };
 
@@ -33,6 +34,7 @@ export const SAVEDATA = async (newFact) => {
     return data; // 데이터를 반환
   } catch (error) {
     console.error("There was an error posting the data!", error);
+    throw error;
   }
 };
 
@@ -64,5 +66,6 @@ export const DELETEDATA = async (id) => {
     }
   } catch (error) {
     console.error("There was an error deleting the data!", error);
+    throw error;
   }
 };

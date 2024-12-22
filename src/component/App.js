@@ -1,71 +1,66 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useReducer } from "react";
 import "../css/style.css";
 import { CategoriesProvider, useCategories } from "./CategoriesContext";
 import { SAVEDATA, FETCHDATA } from "./Router.js";
-import FactList from "./ItemList.js";
+import FactList from "./FactList.js";
 import Pagination from "./Pagination.js";
+import { factsReducer, initialState } from "./Reducer.js";
+import { loadFacts, saveFacts } from "./FactService.js"; // 서비스에서 loadFacts 가져오기
 
 var pageSize = 5;
 // App component ->  앞 글자가 대문자 (naming convention)
 function App() {
   const [showForm, setShowForm] = useState(false);
-  const [facts, setFacts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const totalElements = useRef(0);
-  const [currentCategory, setCurrentCategory] = useState("all");
+  // const [facts, setFacts] = useState([]);
+  // const [currentPage, setCurrentPage] = useState(0);
+  // const totalElements = useRef(0);
+  // const [currentCategory, setCurrentCategory] = useState("all");
+  const [state, dispatch] = useReducer(factsReducer, initialState);
+  const {
+    facts,
+    isLoading,
+    error,
+    currentPage,
+    currentCategory,
+    totalElements,
+  } = state;
 
-  const loadFacts = async () => {
-    const data = await FETCHDATA(currentPage, pageSize, currentCategory);
-    setFacts(data.items);
-    totalElements.current = data.totalCount;
-  };
+  // const loadFacts = async () => {
+  //   dispatch({ type: "FETCH_REQUEST" });
+  //   const data = await FETCHDATA(currentPage, pageSize, currentCategory);
+  //   dispatch({ type: "FETCH_SUCCESS", payload: data });
+  //   // setFacts(data.items);
+  //   // totalElements.current = data.totalCount;
+  // };
 
   useEffect(() => {
-    totalElements.current = 0;
-    if (currentPage !== 0) setCurrentPage(0);
-    else loadFacts();
+    console.log("currentCategory", currentCategory);
+    if (currentPage !== 0) dispatch({ type: "SET_PAGE", page: 0 });
+    else loadFacts(state, dispatch);
   }, [currentCategory]);
 
   useEffect(() => {
-    loadFacts();
+    console.log("currentPage", currentPage);
+    loadFacts(state, dispatch);
   }, [currentPage]);
-  console.log(facts);
 
   return (
     <CategoriesProvider>
       <Header showForm={showForm} setShowForm={setShowForm} />
       {showForm ? (
         <NewFactForm
-          facts={facts}
-          currentPage={currentPage}
-          setFacts={setFacts}
+          state={state}
+          dispatch={dispatch}
           setShowForm={setShowForm}
-          setCurrentPage={setCurrentPage}
-          setCurrentCategory={setCurrentCategory}
-          totalElements={totalElements}
         />
       ) : null}
 
       <main className="main">
         <div className="content">
-          <CategoryFilter
-            setCurrentCategory={setCurrentCategory}
-            setFacts={setFacts}
-          />
-          <FactList
-            facts={facts}
-            setFacts={setFacts}
-            currentPage={currentPage}
-            currentCategory={currentCategory}
-            totalElements={totalElements}
-          />
+          <CategoryFilter state={state} dispatch={dispatch} />
+          <FactList state={state} dispatch={dispatch} />
         </div>
-        <Pagination
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          totalElements={totalElements.current}
-          pageSize={pageSize}
-        />
+        <Pagination state={state} dispatch={dispatch} />
       </main>
     </CategoriesProvider>
   );
@@ -101,14 +96,7 @@ function isValidUrl(url) {
   }
 }
 
-function NewFactForm({
-  setFacts,
-  setShowForm,
-  currentPage,
-  setCurrentPage,
-  setCurrentCategory,
-  totalElements,
-}) {
+function NewFactForm({ state, dispatch, setShowForm }) {
   const CATEGORIES = useCategories();
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
@@ -116,31 +104,10 @@ function NewFactForm({
 
   const textLength = text.length;
 
-  const saveFacts = async (newFact) => {
-    const data = await SAVEDATA(newFact);
-    totalElements.current += 1;
-    if (currentPage == 0) {
-      // DB에서 꺼내오는 게 아니라 메모리에서 수동 조작
-      setFacts((prevFacts) => {
-        // 새로운 데이터를 추가하고, pageSize개 이상이면 가장 오래된 아이템을 삭제
-        const updatedFacts = [data.item, ...prevFacts];
-
-        if (updatedFacts.length > pageSize) {
-          updatedFacts.pop(); // 배열의 마지막 요소(가장 오래된 아이템) 삭제
-        }
-
-        return updatedFacts;
-      });
-    }
-    setCurrentPage(0); // DB에서 로드 후 페이지 0으로 설정
-  };
-
   function handleSubmit(e) {
     e.preventDefault(); // once form submitted, the page will reload everything, so prevent this!
 
     if (text && isValidUrl(source) && category && textLength <= 200) {
-      const today = new Date();
-
       const newFact = {
         id: "",
         text: text,
@@ -151,8 +118,11 @@ function NewFactForm({
         createdIn: "",
       };
 
-      saveFacts(newFact);
-      setCurrentCategory(category);
+      // saveFacts(newFact);
+      // setCurrentCategory(category);
+      dispatch({ type: "SET_CATEGORY", category: "all" });
+      dispatch({ type: "SET_PAGE", page: 0 });
+      saveFacts(newFact, state, dispatch);
     } else {
       if (text.length === 0) {
         alert("Please write a fact!");
@@ -200,7 +170,7 @@ function NewFactForm({
   );
 }
 
-function CategoryFilter({ setCurrentCategory }) {
+function CategoryFilter({ state, dispatch }) {
   const CATEGORIES = useCategories();
   return (
     <aside>
@@ -208,7 +178,7 @@ function CategoryFilter({ setCurrentCategory }) {
         <li className="category">
           <button
             className="btn btn-all-categories"
-            onClick={() => setCurrentCategory("all")}
+            onClick={() => dispatch({ type: "SET_CATEGORY", category: "all" })}
           >
             All
           </button>
@@ -220,7 +190,9 @@ function CategoryFilter({ setCurrentCategory }) {
               style={{
                 backgroundColor: cat.color,
               }}
-              onClick={() => setCurrentCategory(cat.name)}
+              onClick={() =>
+                dispatch({ type: "SET_CATEGORY", category: cat.name })
+              }
             >
               {cat.name}
             </button>

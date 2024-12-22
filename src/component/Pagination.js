@@ -1,22 +1,26 @@
 import "../css/Page.css";
-function Pagination({ currentPage, setCurrentPage, totalElements, pageSize }) {
-  var totalPages = Math.ceil(totalElements / pageSize);
+function Pagination({ state, dispatch }) {
+  var totalPages = Math.ceil(state.totalElements / state.pageSize);
   if (totalPages === 0) totalPages = 1;
 
   // 페이지 변경 함수
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    dispatch({ type: "SET_PAGE", page: page });
   };
 
+  const currentPage = state.currentPage;
   const handlePrevPage = () => {
     if (currentPage > 0) {
-      handlePageChange(currentPage - 1); // 이전 페이지로 이동
+      dispatch({ type: "SET_PAGE", page: currentPage - 1 }); // 이전 페이지로 이동
+      //handlePageChange(currentPage - 1); // 이전 페이지로 이동
     }
   };
 
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
-      handlePageChange(currentPage + 1); // 다음 페이지로 이동
+      dispatch({ type: "SET_PAGE", page: currentPage + 1 }); // 이전 페이지로 이동
+
+      // handlePageChange(currentPage + 1); // 다음 페이지로 이동
     }
   };
 

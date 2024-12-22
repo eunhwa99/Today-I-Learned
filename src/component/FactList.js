@@ -1,34 +1,22 @@
 import { useState } from "react";
-import Modal from "./Modal";
-import { useCategories } from "./CategoriesContext";
+import Modal from "./Modal.js";
+import { useCategories } from "./CategoriesContext.js";
 import { FETCHDATA, UPDATEDATA, DELETEDATA } from "./Router.js";
+import { deleteFacts, loadFacts, saveFacts } from "./FactService.js";
 
-function FactList({
-  facts,
-  setFacts,
-  currentPage,
-  currentCategory,
-  totalElements,
-}) {
+function FactList({ state, dispatch }) {
   return (
     <section>
       <ul className="facts-list">
-        {facts.map((f) => (
-          <Fact
-            key={f.id}
-            setFacts={setFacts}
-            fact={f}
-            currentPage={currentPage}
-            currentCategory={currentCategory}
-            totalElements={totalElements}
-          />
+        {state.facts.map((f) => (
+          <Fact key={f.id} fact={f} state={state} dispatch={dispatch} />
         ))}
       </ul>
     </section>
   );
 }
 
-function Fact({ fact, setFacts, currentPage, currentCategory, totalElements }) {
+function Fact({ fact, state, dispatch }) {
   const CATEGORIES = useCategories(); // CATEGORIES를 가져옴
 
   // 상태 초기화
@@ -48,19 +36,17 @@ function Fact({ fact, setFacts, currentPage, currentCategory, totalElements }) {
   // 사용자 노트 업데이트 함수
   const handleNoteChange = (e) => setUserNote(e.target.value);
 
-  const loadFacts = async () => {
-    const data = await FETCHDATA(currentPage, 5, currentCategory);
-    return data;
-  };
+  // const loadFacts = async () => {
+  //   const data = await FETCHDATA(currentPage, 5, currentCategory);
+  //   return data;
+  // };
+  loadFacts(state, dispatch);
+
   // 우클릭 삭제 처리
   const handleRightClick = async (event, id) => {
     event.preventDefault();
     if (window.confirm("Delete?")) {
-      await DELETEDATA(id);
-      const data = await loadFacts();
-
-      setFacts(data.items);
-      totalElements.current = data.totalCount;
+      deleteFacts(id, state, dispatch);
     }
   };
 
