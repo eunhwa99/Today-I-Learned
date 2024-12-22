@@ -26,12 +26,12 @@ class RequestController(private val itemService: TILItemService) {
     fun getPagedItemList(
         @RequestParam @Min(0) page: Int,
         @RequestParam @Min(1) size: Int,
-        @RequestParam @Min(0) currentTotalPage: Int,
+        @RequestParam @Min(0) currentTotalCount: Long,
         @RequestParam category: String
     ): PagedItemResponse {
-        logger.info("/items: ${currentTotalPage}")
-        val data = itemService.getItemsByCategory(page, size, currentTotalPage, category)
-        return PagedItemResponse(data.itemList, data.totalPages)
+        logger.info("/items: ${currentTotalCount}")
+        val data = itemService.getItemsByCategory(page, size, currentTotalCount, category)
+        return PagedItemResponse(data.itemList, data.totalCount)
     }
 
     @PostMapping("/item")
