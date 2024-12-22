@@ -70,6 +70,9 @@ body {
   .main {
     grid-template-columns: 1fr; /* 1개의 column만 공간을 차지하도록 설정 */
   }
+  .content {
+    grid-template-columns: 1fr; /* .content의 컬럼을 1개로 변경 */
+  }
 }
 
 /* Elements */

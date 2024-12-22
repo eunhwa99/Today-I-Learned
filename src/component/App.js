@@ -15,12 +15,7 @@ function App() {
   const [currentCategory, setCurrentCategory] = useState("all");
 
   const loadFacts = async () => {
-    const data = await FETCHDATA(
-      currentPage,
-      pageSize,
-      totalElements.current,
-      currentCategory
-    );
+    const data = await FETCHDATA(currentPage, pageSize, currentCategory);
     setFacts(data.items);
     totalElements.current = data.totalCount;
   };
@@ -42,8 +37,11 @@ function App() {
       {showForm ? (
         <NewFactForm
           facts={facts}
+          currentPage={currentPage}
           setFacts={setFacts}
           setShowForm={setShowForm}
+          setCurrentPage={setCurrentPage}
+          setCurrentCategory={setCurrentCategory}
           totalElements={totalElements}
         />
       ) : null}
@@ -103,7 +101,14 @@ function isValidUrl(url) {
   }
 }
 
-function NewFactForm({ setFacts, setShowForm, totalElements }) {
+function NewFactForm({
+  setFacts,
+  setShowForm,
+  currentPage,
+  setCurrentPage,
+  setCurrentCategory,
+  totalElements,
+}) {
   const CATEGORIES = useCategories();
   const [text, setText] = useState("");
   const [source, setSource] = useState("");
@@ -114,17 +119,20 @@ function NewFactForm({ setFacts, setShowForm, totalElements }) {
   const saveFacts = async (newFact) => {
     const data = await SAVEDATA(newFact);
     totalElements.current += 1;
+    if (currentPage == 0) {
+      // DB에서 꺼내오는 게 아니라 메모리에서 수동 조작
+      setFacts((prevFacts) => {
+        // 새로운 데이터를 추가하고, pageSize개 이상이면 가장 오래된 아이템을 삭제
+        const updatedFacts = [data.item, ...prevFacts];
 
-    setFacts((prevFacts) => {
-      // 새로운 데이터를 추가하고, pageSize개 이상이면 가장 오래된 아이템을 삭제
-      const updatedFacts = [data.item, ...prevFacts];
+        if (updatedFacts.length > pageSize) {
+          updatedFacts.pop(); // 배열의 마지막 요소(가장 오래된 아이템) 삭제
+        }
 
-      if (updatedFacts.length > pageSize) {
-        updatedFacts.pop(); // 배열의 마지막 요소(가장 오래된 아이템) 삭제
-      }
-
-      return updatedFacts;
-    });
+        return updatedFacts;
+      });
+    }
+    setCurrentPage(0); // DB에서 로드 후 페이지 0으로 설정
   };
 
   function handleSubmit(e) {
@@ -133,10 +141,6 @@ function NewFactForm({ setFacts, setShowForm, totalElements }) {
     if (text && isValidUrl(source) && category && textLength <= 200) {
       const today = new Date();
 
-      const year = today.getFullYear();
-      const month = today.getMonth() + 1;
-      const day = today.getDate();
-
       const newFact = {
         id: "",
         text: text,
@@ -144,12 +148,11 @@ function NewFactForm({ setFacts, setShowForm, totalElements }) {
         category: category,
         votesInteresting: 0,
         votesMindBlowing: 0,
-        createdIn: `${year}-${String(month).padStart(2, "0")}-${String(
-          day
-        ).padStart(2, "0")}`,
+        createdIn: "",
       };
 
       saveFacts(newFact);
+      setCurrentCategory(category);
     } else {
       if (text.length === 0) {
         alert("Please write a fact!");
