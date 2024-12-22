@@ -49,12 +49,7 @@ function Fact({ fact, setFacts, currentPage, currentCategory, totalElements }) {
   const handleNoteChange = (e) => setUserNote(e.target.value);
 
   const loadFacts = async () => {
-    const data = await FETCHDATA(
-      currentPage + 1,
-      1,
-      totalElements.current,
-      currentCategory
-    );
+    const data = await FETCHDATA(currentPage, 5, currentCategory);
     return data;
   };
   // 우클릭 삭제 처리
@@ -63,13 +58,9 @@ function Fact({ fact, setFacts, currentPage, currentCategory, totalElements }) {
     if (window.confirm("Delete?")) {
       await DELETEDATA(id);
       const data = await loadFacts();
-      if (data === undefined)
-        setFacts((prevItems) => prevItems.filter((item) => item.id !== id));
-      console.log(data.items);
-      setFacts((prevItems) => [
-        ...prevItems.filter((item) => item.id !== id),
-        data.items[0],
-      ]);
+
+      setFacts(data.items);
+      totalElements.current = data.totalCount;
     }
   };
 

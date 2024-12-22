@@ -1,11 +1,6 @@
 const endpoint = "http://localhost:8080/til";
-export const FETCHDATA = async (
-  page = 0,
-  size = 5,
-  totalElements = 0,
-  category = "all"
-) => {
-  const url = `${endpoint}/items?page=${page}&size=${size}&currentTotalCount=${totalElements}&category=${category}`;
+export const FETCHDATA = async (page = 0, size = 5, category = "all") => {
+  const url = `${endpoint}/items?page=${page}&size=${size}&category=${category}`;
 
   try {
     const response = await fetch(url);
