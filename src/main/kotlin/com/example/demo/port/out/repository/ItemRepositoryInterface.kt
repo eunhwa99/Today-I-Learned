@@ -16,4 +16,5 @@ interface ItemRepositoryInterface {
     fun findItem(id: String): TILItem?
     fun updateItem(id: String, attributes: Map<String, String>): UpdateResult
     fun deleteItem(id: String)
+    fun deleteAllItems()
 }

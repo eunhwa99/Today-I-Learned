@@ -91,4 +91,8 @@ class TILItemService(private val itemRepository: ItemRepositoryInterface) {
         return item
     }
 
+    fun deletAllItems() {
+        itemRepository.deleteAllItems()
+    }
+
 }

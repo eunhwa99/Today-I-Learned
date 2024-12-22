@@ -30,8 +30,7 @@ class ItemRepositoryMongoAdapter(private val itemRepository: ItemRepository, pri
                 source = item.source,
                 category = item.category,
                 votesInteresting = item.votesInteresting,
-                votesMindBlowing = item.votesMindBlowing,
-                createdIn = item.createdIn
+                votesMindBlowing = item.votesMindBlowing
             )
         )
         return TILItemFactory.from(it)
@@ -100,5 +99,9 @@ class ItemRepositoryMongoAdapter(private val itemRepository: ItemRepository, pri
 
     override fun deleteItem(id: String) {
         itemRepository.deleteById(id);
+    }
+
+    override fun deleteAllItems() {
+        itemRepository.deleteAll()
     }
 }

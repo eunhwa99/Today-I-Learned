@@ -26,7 +26,7 @@ class RequestController(private val itemService: TILItemService) {
     fun getPagedItemList(
         @RequestParam @Min(0) page: Int,
         @RequestParam @Min(1) size: Int,
-        @RequestParam @Min(0) currentTotalCount: Long,
+        @RequestParam(required = false) @Min(0) currentTotalCount: Long = 0L,
         @RequestParam category: String
     ): PagedItemResponse {
         logger.info("/items: ${currentTotalCount}")
@@ -53,6 +53,15 @@ class RequestController(private val itemService: TILItemService) {
         // 삭제 로직 수행
         val result = itemService.deleteItem(id)
         logger.info("Delete an item: ${result})")
+    }
+
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/all/items")
+    fun deleteAllItems() {
+        // 삭제 로직 수행
+        itemService.deletAllItems()
+        logger.info("Delete all items)")
     }
 
 }

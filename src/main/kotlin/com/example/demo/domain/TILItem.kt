@@ -21,7 +21,7 @@ object TILItemFactory {
             category = itemEntity.category,
             votesInteresting = itemEntity.votesInteresting,
             votesMindBlowing = itemEntity.votesMindBlowing,
-            createdIn = itemEntity.createdIn
+            createdIn = itemEntity.createdIn.toString()
         )
     }
 }
