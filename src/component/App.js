@@ -11,7 +11,7 @@ var pageSize = 5;
 function App() {
   const [showForm, setShowForm] = useState(false);
   const [state, dispatch] = useReducer(factsReducer, initialState);
-  const [refresh, setRefresh] = useState(false);
+
   const {
     facts,
     isLoading,
@@ -22,13 +22,11 @@ function App() {
   } = state;
 
   useEffect(() => {
-    console.log("currentCategory", currentCategory);
     if (currentPage !== 0) dispatch({ type: "SET_PAGE", page: 0 });
     else loadFacts(state, dispatch);
   }, [currentCategory]);
 
   useEffect(() => {
-    console.log("currentPage", currentPage);
     loadFacts(state, dispatch);
   }, [currentPage]);
 

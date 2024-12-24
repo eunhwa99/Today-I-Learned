@@ -21,7 +21,8 @@ export const loadFacts = async (state, dispatch) => {
 
 export const saveFacts = async (newData, state, dispatch) => {
   const data = await SAVEDATA(newData);
-  if (state.category !== "all") {
+
+  if (state.currentCategory !== "all") {
     dispatch({ type: "SET_CATEGORY", category: "all" });
   } else {
     if (state.currentPage !== 0) {
