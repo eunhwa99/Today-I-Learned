@@ -17,7 +17,7 @@
 
 .modal-content {
   background-color: #3f3d3d;
-  padding: 16px; /* 패딩을 줄여서 더 깔끔한 디자인 */
+  padding: 20px; /* 패딩을 줄여서 더 깔끔한 디자인 */
   border-radius: 12px; /* 모서리의 둥근 정도를 살짝 더 부드럽게 */
   width: 100%;
   max-width: 800px;
