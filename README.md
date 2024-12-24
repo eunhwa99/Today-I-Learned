@@ -18,8 +18,8 @@ This innovative app is designed to help users capture and reflect on what they l
 - Simple way to check detailed notes of learned items.
 
 ## Current Status:
-The project is still actively being developed, but feel free to explore the current progress below!
-![화면 기록 2024-12-25 오전 12 29 09](https://github.com/user-attachments/assets/4e8ea936-3555-484e-a0fe-ef6d8e60452f)
+The project is still actively being developed, but feel free to explore the current progress below!  
+<img src="https://github.com/user-attachments/assets/4e8ea936-3555-484e-a0fe-ef6d8e60452f" width=600 height=300/>
 
 
 ## Future Plans:
