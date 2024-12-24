@@ -79,6 +79,7 @@ function Fact({ fact, state, dispatch }) {
               href={fact.source}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
             >
               (Source)
             </a>
@@ -95,10 +96,20 @@ function Fact({ fact, state, dispatch }) {
           {fact.category}
         </span>
         <div className="vote-buttons">
-          <button onClick={() => handleVoteClick(fact.id, "interesting")}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleVoteClick(fact.id, "interesting");
+            }}
+          >
             👍 {intersting}
           </button>
-          <button onClick={() => handleVoteClick(fact.id, "mindBlowing")}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleVoteClick(fact.id, "mindBlowing");
+            }}
+          >
             ❤️ {mindBlowing}
           </button>
         </div>

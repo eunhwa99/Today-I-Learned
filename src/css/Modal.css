@@ -62,7 +62,7 @@ h2 {
 
 /* 각 항목의 내용 */
 .item-detail {
-  font-size: 14px;
+  font-size: 15px;
   margin: 5px 5px 10px 10px;
   color: #ccc;
   word-wrap: break-word; /* 긴 텍스트가 줄 바꿈 되도록 */
