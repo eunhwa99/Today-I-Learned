@@ -9,6 +9,7 @@ data class TILItem(
     val category: String,
     val votesInteresting: String,
     val votesMindBlowing: String,
+    val userNote: String?,
     val createdIn: String
 )
 
@@ -21,6 +22,7 @@ object TILItemFactory {
             category = itemEntity.category,
             votesInteresting = itemEntity.votesInteresting,
             votesMindBlowing = itemEntity.votesMindBlowing,
+            userNote = itemEntity.userNote,
             createdIn = itemEntity.createdIn.toString()
         )
     }

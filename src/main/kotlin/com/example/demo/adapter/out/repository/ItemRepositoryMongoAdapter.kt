@@ -30,7 +30,8 @@ class ItemRepositoryMongoAdapter(private val itemRepository: ItemRepository, pri
                 source = item.source,
                 category = item.category,
                 votesInteresting = item.votesInteresting,
-                votesMindBlowing = item.votesMindBlowing
+                votesMindBlowing = item.votesMindBlowing,
+                userNote = item.userNote
             )
         )
         return TILItemFactory.from(it)

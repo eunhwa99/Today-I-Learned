@@ -16,5 +16,6 @@ data class ItemEntity(
     val category: String,
     val votesInteresting: String,
     val votesMindBlowing: String,
+    val userNote: String?,
     var createdIn: LocalDateTime = LocalDateTime.now()
 )
