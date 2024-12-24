@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Modal from "./Modal.js";
 import { useCategories } from "./CategoriesContext.js";
-import { FETCHDATA, UPDATEDATA, DELETEDATA } from "./Router.js";
-import { deleteFacts, loadFacts, saveFacts } from "./FactService.js";
+import { deleteFacts, updateFacts } from "./FactService.js";
 
 function FactList({ state, dispatch }) {
   return (
@@ -27,11 +26,15 @@ function Fact({ fact, state, dispatch }) {
     parseInt(fact.votesMindBlowing, 10)
   );
   const [modalOpen, setModalOpen] = useState(false);
-  const [userNote, setUserNote] = useState("");
+
+  const [userNote, setUserNote] = useState(fact.userNote);
 
   // 모달 열기/닫기 함수
   const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
+  const closeModal = () => {
+    updateFacts(fact.id, "userNote", userNote);
+    setModalOpen(false);
+  };
 
   // 사용자 노트 업데이트 함수
   const handleNoteChange = (e) => setUserNote(e.target.value);
@@ -54,7 +57,7 @@ function Fact({ fact, state, dispatch }) {
     voteStateUpdater(newCount);
 
     // 서버 요청 (비동기 처리)
-    UPDATEDATA(
+    updateFacts(
       factId,
       `votes${voteType.charAt(0).toUpperCase() + voteType.slice(1)}`,
       newCount
@@ -65,9 +68,10 @@ function Fact({ fact, state, dispatch }) {
     <>
       <li
         className="fact"
+        onClick={openModal}
         onContextMenu={(event) => handleRightClick(event, fact.id)}
       >
-        <p onClick={openModal}>
+        <p>
           {fact.text}
           {fact.source && (
             <a

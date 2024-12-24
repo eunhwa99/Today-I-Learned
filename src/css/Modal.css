@@ -37,6 +37,28 @@ h2 {
   color: #fff;
   text-align: center; /* 제목 중앙 정렬 */
 }
+/* 제목과 카테고리를 수평으로 배치 */
+.title-container {
+  display: flex; /* Flexbox로 배치 */
+  align-items: center; /* 세로 정렬 */
+  gap: 10px; /* 제목과 카테고리 사이의 간격 */
+  color: #fff;
+  font-size: 24px; /* 제목 크기 */
+  justify-content: center; /* 전체 콘텐츠를 중앙으로 정렬 */
+  width: 100%; /* 전체 너비를 차지하도록 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+/* 카테고리 스타일 */
+.item-category {
+  background-color: #3b82f6; /* 배경 색상 */
+  color: white; /* 텍스트 색상 */
+  font-size: 16px; /* 카테고리 글자 크기 */
+  font-weight: bold;
+  padding: 5px 10px; /* 글자에 맞는 여백 */
+  border-radius: 8px; /* 둥근 모서리 */
+  display: inline-block; /* 텍스트에 맞춰 배경 크기 조정 */
+}
 
 /* 각 항목의 내용 */
 .item-detail {

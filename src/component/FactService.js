@@ -1,4 +1,4 @@
-import { SAVEDATA, FETCHDATA, DELETEDATA } from "./Router.js";
+import { SAVEDATA, FETCHDATA, DELETEDATA, UPDATEDATA } from "./Router.js";
 
 export const loadFacts = async (state, dispatch) => {
   dispatch({ type: "FETCH_REQUEST" });
@@ -36,4 +36,8 @@ export const saveFacts = async (newData, state, dispatch) => {
 export const deleteFacts = async (id, state, dispatch) => {
   const data = await DELETEDATA(id);
   loadFacts(state, dispatch);
+};
+
+export const updateFacts = async (id, key, newData) => {
+  UPDATEDATA(id, key, newData);
 };
