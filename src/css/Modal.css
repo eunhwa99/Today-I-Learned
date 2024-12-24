@@ -1,0 +1,173 @@
+/* 모달 오버레이 */
+.modal-overlay {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: auto; /* 긴 내용이 모달 밖으로 넘칠 때 스크롤 가능 */
+}
+
+.modal-content {
+  background-color: #3f3d3d;
+  padding: 16px; /* 패딩을 줄여서 더 깔끔한 디자인 */
+  border-radius: 12px; /* 모서리의 둥근 정도를 살짝 더 부드럽게 */
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: left;
+  overflow-y: auto;
+  max-height: 90vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 제목 */
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #fff;
+  text-align: center; /* 제목 중앙 정렬 */
+}
+
+/* 각 항목의 내용 */
+.item-detail {
+  font-size: 14px;
+  margin: 5px 5px 10px 10px;
+  color: #ccc;
+  word-wrap: break-word; /* 긴 텍스트가 줄 바꿈 되도록 */
+  line-height: 0.5;
+}
+
+.item-source:link,
+.item-source:visited {
+  color: #a8a29e;
+  transition: 0.3s;
+}
+
+.item-source:hover,
+.item-source:active {
+  color: #3b82f6;
+}
+
+/* 메타 데이터 섹션 */
+.meta-data-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* 메타 데이터 항목을 수평으로 배치 */
+.meta-data-wrapper {
+  background-color: #484646;
+  display: flex;
+  flex-direction: column; /* 모달 안에 항목들을 세로로 배치 */
+  border-radius: 8px;
+  flex-wrap: wrap; /* 화면 크기에 맞게 항목들이 자동으로 줄 바꿈 */
+}
+
+.item-text {
+  font-size: 16px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  color: #ccc;
+  line-height: 1.5;
+  word-wrap: break-word; /* 긴 텍스트가 줄 바꿈되도록 */
+}
+
+/* NOTE 영역 제목 */
+.note-title {
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ccc; /* NOTE 제목 아래에 구분선 */
+  padding-bottom: 8px;
+}
+
+/* 돋보기 버튼 */
+.view-post-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.view-post-btn:hover {
+  color: #3b82f6;
+}
+
+/* NOTE 입력 컨테이너 */
+.note-container {
+  margin-top: 20px;
+}
+
+.note-input-container {
+  margin-bottom: 20px;
+}
+
+.note-textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  background-color: #4c4c4c;
+  color: #fff;
+  line-height: 1.5;
+  min-height: 100px;
+}
+
+/* 버튼 컨테이너 */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* 닫기 버튼 */
+.close-btn {
+  background-color: #e63946; /* 부드러운 빨강 */
+  border: none;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 100px;
+
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* 모바일에서 모달 크기와 폰트 크기 조정 */
+@media (max-width: 900px) {
+  .modal-content {
+    width: 100%;
+    max-width: 85%;
+    padding: 20px;
+  }
+
+  .note-title {
+    font-size: 18px;
+  }
+
+  .close-btn {
+    padding: 10px 18px;
+  }
+}
