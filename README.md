@@ -19,7 +19,8 @@ This innovative app is designed to help users capture and reflect on what they l
 
 ## Current Status:
 The project is still actively being developed, but feel free to explore the current progress below!  
-<img src="https://github.com/user-attachments/assets/4e8ea936-3555-484e-a0fe-ef6d8e60452f" width=600 height=300/>
+![%E1%84%92%E1%85%AA%E1%84%86%E1%85%A7%E1%86%AB%20%E1%84%80%E1%85%B5%E1%84%85%E1%85%A9%E1%86%A8%202024-12-25%20%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB%2012-2](https://github.com/user-attachments/assets/494ad355-7e5c-4871-9996-654a71eb99a1)
+
 
 
 ## Future Plans:
